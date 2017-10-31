@@ -1,0 +1,18 @@
+http://www.android-studio.org/
+https://developer.android.google.cn/about/versions/marshmallow/android-6.0-samples.html
+https://developer.android.google.cn/training/index.html
+
+If you're using the v7 appcompat library, your activity should instead extend AppCompatActivity, 
+which is a subclass of FragmentActivity. For more information, read Adding the App Bar).
+
+V7 already references v4, so just use v7 support library
+
+Fragment lifecycle:
+onAttach()
+onCreate()
+onStart()
+All Fragment-to-Fragment communication is done through the associated Activity. Two Fragments should never communicate directly.
+
+
+
+
