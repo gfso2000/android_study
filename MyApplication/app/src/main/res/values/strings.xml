@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_save_db">Save To DB</string>
+    <string name="button_query_db">Query</string>
+    <string name="chooser_title">choose</string>
+    <string name="item1">item1</string>
+    <string name="group_item1">group_item1</string>
+    <string name="group_item2">group_item2</string>
+    <string name="submenu_title">submenu_title</string>
+    <string name="submenu_item1">submenu_item1</string>
+
+</resources>

@@ -1,17 +1,59 @@
 http://www.android-studio.org/
 https://developer.android.google.cn/about/versions/marshmallow/android-6.0-samples.html
 https://developer.android.google.cn/training/index.html
-
+---------------------------------------------------------------------------------------------
 If you're using the v7 appcompat library, your activity should instead extend AppCompatActivity, 
 which is a subclass of FragmentActivity. For more information, read Adding the App Bar).
 
 V7 already references v4, so just use v7 support library
-
+---------------------------------------------------------------------------------------------
 Fragment lifecycle:
 onAttach()
 onCreate()
 onStart()
 All Fragment-to-Fragment communication is done through the associated Activity. Two Fragments should never communicate directly.
+
+button->onClick() doesn't work in Fragment, have to add onClickListener programmatically
+---------------------------------------------------------------------------------------------
+The SharedPreferences APIs are only for reading and writing key-value pairs and you should not confuse them with the Preference APIs, 
+which help you build a user interface for your app settings 
+(although they use SharedPreferences as their implementation to save the app settings). 
+
+Context context = getActivity();
+SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);		
+---------------------------------------------------------------------------------------------
+Internal Storage
+getFilesDir() -- /data/data/com.example.i325639.myapplication/files
+getCacheDir() -- will be deleted without warning
+
+External Storage
+getExternalFilesDir() -- only for your app 
+--/storage/emulated/0/Android/data/com.example.i325639.myapplication/files/Pictures/JPEG_20171108_141741_2108820709.jpg
+
+getExternalStoragePublicDirectory() -- like music, camera
+
+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) //public, when uninstall, not removed
+Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  //also public, but when uninstall, removed too
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
