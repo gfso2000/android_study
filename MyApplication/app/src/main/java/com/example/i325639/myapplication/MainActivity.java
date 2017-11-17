@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
@@ -25,11 +24,35 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.i325639.myapplication.cloud.EntryListActivity;
+import com.example.i325639.myapplication.contacts.ContactActivity;
+import com.example.i325639.myapplication.network.NetworkActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity implements HeadlinesFragment.OnHeadlineSelectedListener {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
@@ -48,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
             HeadlinesFragment fragment = new HeadlinesFragment();
             this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
+        handleSSLHandshake();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,12 +189,23 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
     }
 
     public void sendMessage(View view) {
+        getOAuthToken();
+
         // Do something in response to button
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+//        Intent intent = new Intent(this, DisplayMessageActivity.class);
+//        EditText editText = (EditText) findViewById(R.id.editText);
+//        String message = editText.getText().toString();
+//        intent.putExtra(EXTRA_MESSAGE, message);
+//        startActivity(intent);
+
+//        Intent intent = new Intent(this, NetworkActivity.class);
+//        startActivity(intent);
+
+//        Intent intent = new Intent(this, EntryListActivity.class);
+//        startActivity(intent);
+
+//        Intent intent = new Intent(this, ContactActivity.class);
+//        startActivity(intent);
 
 //        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
 //        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
@@ -236,6 +271,87 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
 //        }
     }
 
+    private void getUser(final String token) {
+        final EditText editText = (EditText)findViewById(R.id.editText);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="http://10.59.164.241:8889/foo";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        editText.setText(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        editText.setText("That didn't work!");
+                    }
+                }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("authorization","Bearer "+token);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    private void getOAuthToken() {
+        final EditText editText = (EditText)findViewById(R.id.editText);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="https://10.59.164.241:8444/oauth/token";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            editText.setText(obj.getString("access_token"));
+                            getUser(obj.getString("access_token"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        editText.setText("That didn't work!");
+                }
+        }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("grant_type", "password");
+                params.put("username", "alex");
+                params.put("password", "123456");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                params.put("authorization","Basic d2ViX2FwcDo=");
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+        };
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
     @Override
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
@@ -266,6 +382,35 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
 
             // Commit the transaction
             transaction.commit();
+        }
+    }
+
+    public static void handleSSLHandshake() {
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            }};
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String arg0, SSLSession arg1) {
+                    return true;
+                }
+            });
+        } catch (Exception ignored) {
         }
     }
 }

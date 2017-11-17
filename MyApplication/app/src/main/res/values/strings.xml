@@ -13,5 +13,10 @@
     <string name="group_item2">group_item2</string>
     <string name="submenu_title">submenu_title</string>
     <string name="submenu_item1">submenu_item1</string>
-
+    <string name="title_activity_entry_list">EntryListActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="loading">Loading...</string>
+    <string name="no_contacts">no contacts</string>
+    <string name="search_match_other">Matches Other Field</string>
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>
