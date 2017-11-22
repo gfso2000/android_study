@@ -31,8 +31,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.i325639.myapplication.bottomnavigation.BottomNavActivity;
 import com.example.i325639.myapplication.cloud.EntryListActivity;
 import com.example.i325639.myapplication.contacts.ContactActivity;
+import com.example.i325639.myapplication.leftsidemenu.LeftSideNavActivity;
 import com.example.i325639.myapplication.network.NetworkActivity;
 
 import org.json.JSONException;
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
     }
 
     public void sendMessage(View view) {
-        getOAuthToken();
+        //getOAuthToken();
 
         // Do something in response to button
 //        Intent intent = new Intent(this, DisplayMessageActivity.class);
@@ -206,6 +208,12 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
 
 //        Intent intent = new Intent(this, ContactActivity.class);
 //        startActivity(intent);
+
+//        Intent intent = new Intent(this, BottomNavActivity.class);
+//        startActivity(intent);
+
+        Intent intent = new Intent(this, LeftSideNavActivity.class);
+        startActivity(intent);
 
 //        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
 //        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
