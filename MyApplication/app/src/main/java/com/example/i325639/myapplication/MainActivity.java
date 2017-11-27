@@ -1,6 +1,7 @@
 package com.example.i325639.myapplication;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,6 +37,8 @@ import com.example.i325639.myapplication.cloud.EntryListActivity;
 import com.example.i325639.myapplication.contacts.ContactActivity;
 import com.example.i325639.myapplication.leftsidemenu.LeftSideNavActivity;
 import com.example.i325639.myapplication.network.NetworkActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +62,10 @@ import javax.net.ssl.X509TrustManager;
 public class MainActivity extends AppCompatActivity implements HeadlinesFragment.OnHeadlineSelectedListener {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     ShareActionProvider mShareActionProvider;
+
+    MyConnectionReceiver receiver;
+    IntentFilter intentFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
             this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
         handleSSLHandshake();
+
+        receiver = new MyConnectionReceiver();
+        intentFilter = new IntentFilter("com.journaldev.broadcastreceiver.SOME_ACTION");
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,6 +95,18 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         mShareActionProvider.setShareIntent(pickContactIntent);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, intentFilter);
     }
 
     public void shareMessage(MenuItem view) {
@@ -190,7 +212,19 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
         }
     }
 
+    public void UILImage(View view) {
+        //put below init to onCreate()
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+			.build();
+        ImageLoader.getInstance().init(config);
+        ImageView mImageView = (ImageView)findViewById(R.id.imageView);
+        ImageLoader.getInstance().displayImage("https://github.wdf.sap.corp/avatars/u/21573?s=88", mImageView);
+    }
+
     public void sendMessage(View view) {
+        Intent broadCastIntent = new Intent("com.journaldev.broadcastreceiver.SOME_ACTION");
+        sendBroadcast(broadCastIntent);
+
         //getOAuthToken();
 
         // Do something in response to button

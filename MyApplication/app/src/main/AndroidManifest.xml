@@ -98,13 +98,15 @@
             android:name=".bottomnavigation.BottomNavActivity"
             android:label="@string/title_activity_bottom_nav" />
         <activity
-            android:name=".leftsidemenu.TabbedActivity"
-            android:label="@string/title_activity_tabbed"
-            android:theme="@style/MyMaterialTheme" />
-        <activity
             android:name=".leftsidemenu.LeftSideNavActivity"
             android:label="@string/title_activity_left_side_nav"
-            android:theme="@style/MyMaterialTheme"></activity>
+            android:theme="@style/MyMaterialTheme" />
+
+        <receiver android:name=".MyConnectionReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
