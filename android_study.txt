@@ -35,9 +35,21 @@ getExternalStoragePublicDirectory() -- like music, camera
 
 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) //public, when uninstall, not removed
 Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  //also public, but when uninstall, removed too
-
-
-
+---------------------------------------------------------------------------------------------
+how to hide title bar?
+In styles.xml, add below:
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+	</style>
+---------------------------------------------------------------------------------------------
+in build.gradle, use "api" or "implementation", "compile" is deprecated.
+https://stackoverflow.com/questions/44413952/gradle-implementation-vs-api-configuration
+---------------------------------------------------------------------------------------------
+collapsible toolbar layout
+the widget below toolbar, must have below configuration
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+---------------------------------------------------------------------------------------------
 
 
 

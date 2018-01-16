@@ -32,11 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.i325639.myapplication.bottomnavigation.BottomNavActivity;
-import com.example.i325639.myapplication.cloud.EntryListActivity;
-import com.example.i325639.myapplication.contacts.ContactActivity;
-import com.example.i325639.myapplication.leftsidemenu.LeftSideNavActivity;
-import com.example.i325639.myapplication.network.NetworkActivity;
+import com.example.i325639.myapplication.recyclerview.RecyclerViewActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -246,7 +242,10 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
 //        Intent intent = new Intent(this, BottomNavActivity.class);
 //        startActivity(intent);
 
-        Intent intent = new Intent(this, LeftSideNavActivity.class);
+//        Intent intent = new Intent(this, LeftSideNavActivity.class);
+//        startActivity(intent);
+
+        Intent intent = new Intent(this, RecyclerViewActivity.class);
         startActivity(intent);
 
 //        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
