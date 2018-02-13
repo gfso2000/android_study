@@ -50,6 +50,43 @@ collapsible toolbar layout
 the widget below toolbar, must have below configuration
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 ---------------------------------------------------------------------------------------------
+smart lock sign in, must have a google account before sign in, otherwise, the "save password" dialog won't show,
+it seems very easy in Oreo, just like a "remember password" functionality, it will auto fill the username, password text field.
+https://codelabs.developers.google.com/codelabs/android-smart-lock/#5
+---------------------------------------------------------------------------------------------
+create library(aar) file, and can convert a module project to a library project:
+https://developer.android.com/studio/projects/android-library.html
+---------------------------------------------------------------------------------------------
+instant app:
+https://developer.android.com/topic/instant-apps/guides/index.html
+https://codelabs.developers.google.com/codelabs/android-instant-apps/#5
+publish to google store:
+https://support.google.com/googleplay/android-developer/answer/7381861
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
