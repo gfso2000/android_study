@@ -108,7 +108,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".recyclerview.RecyclerViewActivity" android:label="recycler view demo">
+        <activity
+            android:name=".recyclerview.RecyclerViewActivity"
+            android:label="recycler view demo">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -117,6 +119,7 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
+        <activity android:name=".sharedelementtransition.SharedElementTransitionMainActivity"></activity>
     </application>
 
 </manifest>

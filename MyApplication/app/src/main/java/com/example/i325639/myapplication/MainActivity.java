@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.i325639.myapplication.recyclerview.RecyclerViewActivity;
+import com.example.i325639.myapplication.sharedelementtransition.SharedElementTransitionMainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -245,7 +246,10 @@ public class MainActivity extends AppCompatActivity implements HeadlinesFragment
 //        Intent intent = new Intent(this, LeftSideNavActivity.class);
 //        startActivity(intent);
 
-        Intent intent = new Intent(this, RecyclerViewActivity.class);
+//        Intent intent = new Intent(this, RecyclerViewActivity.class);
+//        startActivity(intent);
+
+        Intent intent = new Intent(this, SharedElementTransitionMainActivity.class);
         startActivity(intent);
 
 //        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
