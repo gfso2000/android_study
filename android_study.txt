@@ -91,8 +91,8 @@ observable.subscribeOn(Schedulers.newThread())
          .subscribe(consumer);
 
 map和flatMap，前者是数据类型或者数据结构的改变，而后者是将源Observale转换为新建Observale.
-因为flatmap能转化发射源，既“Observable<RegisterResponse>” -> "Observable<LoginResponse>" ,配合Retrofit就能在完成注册事件后继续完成登录事件。
-map操作符只能把“Observable<RegisterResponse>”里面的“RegisterResponse”转化成“LoginResponse”，而“LoginResponse”只是一个model对象，不能作为发射源完成登录操作。
+因为flatmap能转化发射源，既"Observable<RegisterResponse>” -> "Observable<LoginResponse>" ,配合Retrofit就能在完成注册事件后继续完成登录事件。
+map操作符只能把"Observable<RegisterResponse>”里面的"RegisterResponse”转化成"LoginResponse”，而"LoginResponse”只是一个model对象，不能作为发射源完成登录操作。
 
 fun initializeObjects() {
     initializeObjectsAsync()
@@ -157,10 +157,44 @@ adb devices
 adb push C:/Users/i325639/Desktop/software.txt /sdcard/download
 adb pull /sdcard/Download/pic.jpg /home/myhome/Desktop/pic.jpg
 adb install myapplication.apk
+-------------------------------------------------------------------------------------------------------------------
+retrofit2 + rxjava2
+https://blog.csdn.net/yrmao9893/article/details/69791519
+http://www.vogella.com/tutorials/RxJava/article.html
+http://reactivex.io/documentation/operators.html#transforming
+	A Decision Tree of Observable Operators
+explanation of buffer, map, flatmap, groupby, scan, window:
+http://mushuichuan.com/2015/12/11/rxjava-operator-2/
+very detail:
+https://maxwell-nc.github.io/android/rxjava2-1.html
+-------------------------------------------------------------------------------------------------------------------
+private Observable<Integer> mapObserver() {
+	return Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9).map(integer -> integer * 10);//in map(), the return value is any object
+}
 
+private Observable<Integer> flatMapObserver() {
+	return Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9).flatMap(integer -> Observable.just(integer * 10));//in flatMap, the return value must be Observable
+}
 
+Observable<String> getTopContributors(String userName) {
+  return gitHubApi.listRepos(userName) // returns Observable<List<Repository>>
+	.flatMapIterable(x -> {System.err.println(x);return x;})//need make it iterable,otherwise the entire List<Repository> is emitted
+	.flatMap(repo -> gitHubApi.listRepoContributors(userName, repo.getName()))//now repo is Repository
+	.flatMapIterable(x -> x)//need make it iterable as well
+	.flatMap(c -> {System.err.println(c);return Observable.just(c);})//no need, just for testing, c is Contributor
+	.filter(c -> c.getContributions() > 100)
+	.sorted((a, b) -> b.getContributions() - a.getContributions())
+	.map(Contributor::getName)
+	.distinct();
+}
 
+difference between buffer and window
+buffer return object, usually not Observable object, while window must return Observable object, which can be subscribed again.
+-------------------------------------------------------------------------------------------------------------------
+flowable buffer size is 128
 
+barcode, qrcode scan
+https://medium.com/@hitherejoe/exploring-firebase-mlkit-on-android-barcode-scanning-part-three-cc6f5921a108
 
 
 
