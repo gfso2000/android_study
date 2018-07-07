@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/red"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <TextView
+            android:id="@+id/tb_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="login"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        style="@style/line_max_vertical"
+        ></View>
+
+    <com.gfso.client.oauthclientapplication.fragment.widget.MyEditText
+        android:id="@+id/userId"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/white"
+        android:hint="user"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:enabled="true"
+        android:textSize="14sp"
+        android:drawableLeft="@drawable/icon_telphone_32"/>
+    <View
+        style="@style/line_vertical"/>
+
+    <com.gfso.client.oauthclientapplication.fragment.widget.MyEditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/white"
+        android:enabled="true"
+        android:hint="pass"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:drawableLeft="@drawable/icon_lock"
+        android:textSize="14sp" />
+    <View
+        style="@style/line_max_vertical"
+        ></View>
+
+    <Button
+        android:id="@+id/button_log"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/red"
+        android:text="login"
+        android:textColor="@color/white" />
+
+    <View
+        style="@style/line_max_vertical"
+        ></View>
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/register"
+            android:textColor="@color/red"
+            android:clickable="true"
+            android:text="regist"/>
+        <TextView
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/forgetPass"
+            android:clickable="true"
+            android:textColor="@color/red"
+            android:text="forget_pass"/>
+
+    </RelativeLayout>
+</LinearLayout>
