@@ -32,7 +32,7 @@ public abstract class BaseCallback<T> {
 
     public abstract void onRequestBefore();
     public abstract void onFailure(Request request, IOException e) ;
-    public abstract void onErroe(Response response , int responseCode , Exception e) throws IOException;
+    public abstract void onError(Response response , int responseCode , Exception e) throws IOException;
     public abstract void callBackSucces(Response response , T t) throws IOException;
     public abstract void onTokenError(Response response , int responseCode );
 

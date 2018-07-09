@@ -30,12 +30,12 @@ public class LoginRespMsg<T> extends BaseRespMsg {
 
     private T data ;
 
-    public String getTocken() {
+    public String getToken() {
         return token;
     }
 
-    public void setTocken(String tocken) {
-        this.token = tocken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public T getData() {

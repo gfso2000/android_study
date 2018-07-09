@@ -13,16 +13,12 @@ import java.io.IOException;
 
 import dmax.dialog.SpotsDialog;
 
-/**
- * Created by 博 on 2017/7/1.
- */
-
-public abstract class loadingSpotsDialog<T> extends BaseCallback<T> {
+public abstract class HttpLoadingDialog<T> extends BaseCallback<T> {
 
     private SpotsDialog spotsDialog ;
     private Context mContext ;
 
-    public loadingSpotsDialog(Context context){
+    public HttpLoadingDialog(Context context){
 
         spotsDialog = new SpotsDialog(context) ;
         mContext = context ;

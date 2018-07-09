@@ -1,6 +1,8 @@
 package com.gfso.client.oauthclientapplication.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +13,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +21,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
+import com.gfso.client.oauthclientapplication.bean.User;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerTouchListener;
+import com.gfso.client.oauthclientapplication.msg.LoginRespMsg;
+import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
+import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     AppCompatActivity activity = null;
@@ -40,6 +51,8 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
     private List<Movie> movieList = new ArrayList<>();
     private MoviesAdapter mAdapter;
 
+    OkhttpHelper okhttpHelper;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +63,7 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
     }
 
     private void InitUI(LayoutInflater inflater, View view) {
+        okhttpHelper = OkhttpHelper.getOkhttpHelper() ;
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         searchView = view.findViewById(R.id.head_search_rr);
         searchButton = view.findViewById(R.id.head_btn_sousuo);
@@ -59,18 +73,34 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
                 Toast.makeText(activity, "Hello", Toast.LENGTH_SHORT).show();
             }
         });
+
+        final Fragment me = this;
         scanButton = view.findViewById(R.id.scanbtn);
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "scan", Toast.LENGTH_SHORT).show();
+                //new IntentIntegrator(activity).initiateScan();
+                IntentIntegrator.forSupportFragment(me).initiateScan();
             }
         });
         scanImageView = view.findViewById(R.id.scanImageView);
         scanImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "scan", Toast.LENGTH_SHORT).show();
+                //new IntentIntegrator(activity).initiateScan();
+                //IntentIntegrator.forSupportFragment(me).initiateScan();
+                String url="http://192.168.147.1:8081/qrLogin/scan?uuid=4ee8b561-649a-4550-b442-f61f592fb2cf";
+                //String url="http://www.google.com";
+                String userId="jack";
+                String token="tokenvalue";
+                Map< String , String > params = new HashMap<String, String>() ;
+                params.put("userId" , userId ) ;
+                params.put("token" , token ) ;
+                try {
+                    sendPost(url, userId, token);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         /**
@@ -127,6 +157,59 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(activity, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(activity, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                String urlStr = result.getContents();
+                try {
+                    //have to call http in another thread, otherwise it will throw exception(networkOnMainThread)
+                    SendTask task = new SendTask();
+                    String userId = MyApplication.getInstance().getUser().getUsername();
+                    String token = MyApplication.getInstance().getToken();
+                    task.execute(urlStr, userId, token);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+    class SendTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                sendPost(params[0],params[1],params[2]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    private void sendPost(String url, String userId, String token) throws Exception {
+        Map< String , String > params = new HashMap<String, String>() ;
+        params.put("userId" , userId ) ;
+        params.put("token" , token ) ;
+        okhttpHelper.doPost(url, new HttpLoadingDialog<LoginRespMsg<User>>(activity){
+
+            @Override
+            public void onError(Response response, int responseCode, Exception e) throws IOException {
+                System.out.println(response.toString());
+                Toast.makeText(activity, "Response Message : " + response, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void callBackSucces(Response response, LoginRespMsg<User> userLoginRespMsg) throws IOException {
+                System.out.println(response.toString());
+                Toast.makeText(activity, "Response Message : " + response, Toast.LENGTH_LONG).show();
+            }
+        }, params);
     }
 
     private void initCollapsingToolbar(LayoutInflater inflater, View view) {

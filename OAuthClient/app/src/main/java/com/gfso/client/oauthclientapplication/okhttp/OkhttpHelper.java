@@ -8,9 +8,11 @@ import android.util.Log;
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.exception.GET_RESPONSE_MESSAGE_FAILURE;
 import com.gfso.client.oauthclientapplication.exception.GSON_ANALYZE_MESSAGE_FAILURE;
+import com.gfso.client.oauthclientapplication.util.JsonUtil;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -68,6 +70,57 @@ public class OkhttpHelper {
         doRequest(request,callback);
     }
 
+    public void doJSONPost (String uri , BaseCallback callback , Map<String , String> formData){
+        Request request = buildJSONRequest(uri , formData) ;
+        doJSONRequest(request,callback);
+    }
+    private void doJSONRequest(Request request , final BaseCallback callback){
+        //在进行提交之前进行
+        callback.onRequestBefore();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                //提交失败
+                callbackFailure(callback , request , e); ;
+                Log.e("Okhttp 提交请求失败" , "------>"+e) ;
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+                if(response.isSuccessful()){
+                    //提交成功，得到回返信息
+                    String jqury = response.body().string() ;
+                    Log.d("----" , "------------------------------------jqury:"+jqury) ;
+                    if (callback.type == String.class){
+                        callback.callBackSucces(response , jqury);
+                    }else{
+                        try {
+                            Object obj = gson.fromJson(jqury , callback.type) ;
+                            callbackSuccess(callback , response , obj);
+                        }catch (Exception e){
+                            try {
+                                callbackError(callback , response , null);
+                                throw new GSON_ANALYZE_MESSAGE_FAILURE("gson解析信息失败") ;
+                            } catch (GSON_ANALYZE_MESSAGE_FAILURE gson_analyze_message_failure) {
+                                Log.e("Okhttp 提交请求失败" , "------>"+e) ;
+                            }
+                        }
+                    }
+
+                }
+                else if (response.code() == TOKEN_ERROR ||response.code() == TOKEN_EXPRISE ||response.code() == TOKEN_MISSING  ){
+                    callbackTokenError(callback , response) ;
+                }
+                else {
+                    callbackError(callback , response , null);
+
+                }
+            }
+        });
+    }
+
     //提交请求
     private void doRequest(Request request , final BaseCallback callback){
 
@@ -115,6 +168,16 @@ public class OkhttpHelper {
                 }
             }
         });
+    }
+
+    private Request buildJSONRequest (String uri , Map<String , String> formData){
+        Request.Builder builder = new Request.Builder();
+        Log.d("----" , "------------------------------------uri:"+uri) ;
+        builder.url(uri) ;
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, JsonUtil.toJSON(formData));
+        builder.post(body) ;
+        return builder.build() ;
     }
 
     private Request buildRequest (String uri , METHOD_TYPE method_type , Map<String , String> formData){
@@ -206,7 +269,7 @@ public class OkhttpHelper {
             @Override
             public void run() {
                 try {
-                    baseCallback.onErroe(response , response.code() , new GET_RESPONSE_MESSAGE_FAILURE("获取服务器信息失败"));
+                    baseCallback.onError(response , response.code() , new GET_RESPONSE_MESSAGE_FAILURE("获取服务器信息失败"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

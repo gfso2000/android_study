@@ -19,10 +19,10 @@ import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.User;
 import com.gfso.client.oauthclientapplication.fragment.widget.MyEditText;
-import com.gfso.client.oauthclientapplication.msg.LoginRespMsg;
+import com.gfso.client.oauthclientapplication.msg.ResponseMsg;
 import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
-import com.gfso.client.oauthclientapplication.okhttp.loadingSpotsDialog;
-import com.gfso.client.oauthclientapplication.util.Content;
+import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
+import com.gfso.client.oauthclientapplication.util.Contents;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.register)
     TextView register_button ;
     @BindView(R.id.userId)
-    MyEditText phone ;
+    MyEditText userId ;
     @BindView(R.id.password)
     MyEditText password ;
     OkhttpHelper okhttpHelper;
@@ -75,8 +75,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void initView() {
-        phone.setInputType(InputType.TYPE_CLASS_TEXT); //输入类型
-        phone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)}); //最大输入长度
+        userId.setInputType(InputType.TYPE_CLASS_TEXT); //输入类型
+        userId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)}); //最大输入长度
         password.setTransformationMethod(PasswordTransformationMethod.getInstance()); //设置为密码输入框
         okhttpHelper = OkhttpHelper.getOkhttpHelper() ;
         Text() ;
@@ -86,16 +86,16 @@ public class LoginActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //doLogin(v) ;
-                User user = new User();
-                user.setUsername("jack");
-                MyApplication.getInstance().putUser(user,"token");
-                Intent intent = new Intent();
-                Bundle conData = new Bundle();
-                conData.putString(Content.LOGIN_USERID, "jack");
-                intent.putExtras(conData);
-                setResult(RESULT_OK, intent);
-                finish();
+                doLogin(v) ;
+//                User user = new User();
+//                user.setUsername("jack");
+//                MyApplication.getInstance().putUser(user,"token");
+//                Intent intent = new Intent();
+//                Bundle conData = new Bundle();
+//                conData.putString(Contents.LOGIN_USERID, "jack");
+//                intent.putExtras(conData);
+//                setResult(RESULT_OK, intent);
+//                finish();
             }
         });
 
@@ -121,13 +121,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void doLogin( View v ){
-        String phoneNum = phone.getText().toString() ;
+        final String userName = userId.getText().toString() ;
 
-        if ( phoneNum == null ){
-            Toast.makeText( v.getContext() , "请输入手机号码" , Toast.LENGTH_SHORT).show();
-            return;
-        }else if(phoneNum.length() != 11){
-            Toast.makeText( v.getContext() , "请输入正确的手机号码" , Toast.LENGTH_SHORT).show();
+        if ( userName == null ){
+            Toast.makeText( v.getContext() , "请输入邮箱" , Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -137,22 +134,40 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String uri = "http://myOAuthServer" ;
+        String uri = Contents.LOGIN_URL ;
         Map< String , String > params = new HashMap<String, String>() ;
-        params.put("phone" , phoneNum ) ;
+        params.put("userId" , userName ) ;
         params.put("password" , pwd) ;
 
-        okhttpHelper.doPost(uri, new loadingSpotsDialog<LoginRespMsg<User>>(LoginActivity.this ) {
+        okhttpHelper.doJSONPost(uri, new HttpLoadingDialog<ResponseMsg>(LoginActivity.this ) {
             @Override
-            public void onErroe(Response response, int responseCode, Exception e) throws IOException {
+            public void onError(Response response, int responseCode, Exception e) throws IOException {
                 this.closeSpotsDialog();
             }
 
             @Override
-            public void callBackSucces(Response response, LoginRespMsg<User> userLoginRespMsg) throws IOException {
+            public void callBackSucces(Response response, ResponseMsg msg) throws IOException {
                 this.closeSpotsDialog();
+                closeKeyMode();
 
-                if(userLoginRespMsg.getStatus() == 1){
+                if(msg.isSuccess()){
+                    //save user token
+                    String token = msg.getData().get("token");
+                    User user = new User();
+                    user.setUsername(userName);
+                    MyApplication.getInstance().putUser(user,token);
+                    //finish activity
+                    Intent intent = new Intent();
+                    Bundle conData = new Bundle();
+                    conData.putString(Contents.LOGIN_USERID, userName);
+                    intent.putExtras(conData);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    showLoginErrorMsg(msg.getErrorMessage()) ;
+                }
+
+//                if(userLoginRespMsg.getStatus() == 1){
 
 //                    MyApplication.getInstance().putUser(userLoginRespMsg.getData() , userLoginRespMsg.getTocken());
 //                    closeKeyMode() ;
@@ -164,23 +179,22 @@ public class LoginActivity extends AppCompatActivity {
 //                        MyApplication.jumpToTargetoActivity(LoginActivity.this);
 //                        finish();
 //                    }
-
-                }else {
-                    showLoginErrorMsg() ;
-                    phone.setText("");
-                    password.setText("");
-                }
+//                }else {
+//                    showLoginErrorMsg() ;
+//                    userId.setText("");
+//                    password.setText("");
+//                }
             }
         }, params);
     }
 
     public void Text(){
-        phone.setText("jack.yu05@sap.com");
+        userId.setText("jack.yu05@sap.com");
         password.setText("123456");
     }
 
-    private void showLoginErrorMsg(){
+    private void showLoginErrorMsg(String msg){
         closeKeyMode();
-        Toast.makeText(this, "密码错误" , Toast.LENGTH_LONG).show();
+        Toast.makeText(this, msg , Toast.LENGTH_LONG).show();
     }
 }

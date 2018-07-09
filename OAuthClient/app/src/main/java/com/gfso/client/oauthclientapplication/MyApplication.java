@@ -1,11 +1,14 @@
 package com.gfso.client.oauthclientapplication;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gfso.client.oauthclientapplication.bean.User;
+import com.gfso.client.oauthclientapplication.util.UserLocalData;
 import com.lzy.ninegrid.NineGridView;
 import com.squareup.picasso.Picasso;
 
@@ -13,7 +16,7 @@ import com.squareup.picasso.Picasso;
  * Created by 博 on 2017/8/23.
  */
 
-public class MyApplication {
+public class MyApplication extends Application {
 
     public static final int START_FOR_RESULT  = 0 ;
     public static final int START_NO_RESULT  = 1 ;
@@ -39,20 +42,20 @@ public class MyApplication {
 //        this.intent = intent;
 //    }
 
-    public static MyApplication myApplication = new MyApplication();
+    private static MyApplication myApplication;
 
     public static MyApplication getInstance(){
         return myApplication ;
     }
 
-//    @Override
-//    public void onCreate() {
-//        super.onCreate();
-//        this.myApplication = this ;
-////        initUser();
-//        Fresco.initialize(this);
-//        NineGridView.setImageLoader(new PicassoImageLoader());
-//    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        this.myApplication = this ;
+        initUser();
+        Fresco.initialize(this);
+        NineGridView.setImageLoader(new PicassoImageLoader());
+    }
 
     public User getUser(){
         return user ;
@@ -66,17 +69,21 @@ public class MyApplication {
 
         this.token = token ;
         this.user = user ;
-//        UserLocalData.putUser(this , user);
-//        UserLocalData.putToken(this , token);
+        UserLocalData.putUser(this , user);
+        UserLocalData.putToken(this , token);
     }
 
     public void clearUser(){
         this.user = null ;
         this.token = null ;
-//        UserLocalData.clearUser(this);
-//        UserLocalData.clearToken(this);
+        UserLocalData.clearUser(this);
+        UserLocalData.clearToken(this);
     }
 
+    public void initUser(){
+        this.user = UserLocalData.getUser(this );
+        this.token = UserLocalData.getToken(this) ;
+    }
 //    public static void jumpToTargetoActivity(Activity activity){
 //        activity.startActivity(intent);
 //        intent = null ;

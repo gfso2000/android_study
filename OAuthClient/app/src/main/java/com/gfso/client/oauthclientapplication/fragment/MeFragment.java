@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
-import com.gfso.client.oauthclientapplication.util.Content;
+import com.gfso.client.oauthclientapplication.util.Contents;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +41,7 @@ public class MeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity , LoginActivity.class) ;
-                startActivityForResult(intent , Content.LOGIN_REQUEST);
+                startActivityForResult(intent , Contents.LOGIN_REQUEST);
             }
         });
         return view;
@@ -49,11 +49,11 @@ public class MeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == Content.LOGIN_REQUEST) {
+        if (requestCode == Contents.LOGIN_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Bundle res = data.getExtras();
-                String result = res.getString(Content.LOGIN_USERID);
+                String result = res.getString(Contents.LOGIN_USERID);
                 userIdView.setText(result);
                 Toast.makeText(activity,"login success:"+result,Toast.LENGTH_LONG);
             }
