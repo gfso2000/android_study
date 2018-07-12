@@ -6,28 +6,39 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.gfso.client.oauthclientapplication.CaptureActivityPortrait;
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
-import com.gfso.client.oauthclientapplication.bean.User;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
-import com.gfso.client.oauthclientapplication.msg.LoginRespMsg;
+import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerTouchListener;
+import com.gfso.client.oauthclientapplication.msg.ResponseMsg;
 import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
 import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -40,33 +51,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static java.lang.Math.abs;
+
 public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+    @BindView(R.id.fragment_home_recyclerview)
+    RecyclerView recyclerView;
+    @BindView(R.id.head_scan_search_notification_layout_entire)
+    View headView;
+    @BindView(R.id.head_scan_search_notification_btn_search)
+    Button searchButton;
+    @BindView(R.id.scanbtn)
+    TextView scanButton;
+    @BindView(R.id.notificationbtn)
+    TextView notificationButton;
+    @BindView(R.id.head_scan_search_notification_layout_scan)
+    LinearLayout scanLayout;
+    @BindView(R.id.fragment_home_layout_entire)
+    RelativeLayout entireHomeLayout;
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+
     AppCompatActivity activity = null;
-    private RecyclerView recyclerView;
-    private View searchView;
-    private Button searchButton;
-    private TextView scanButton;
-    private ImageView scanImageView;
     private int mDistanceY;
     private List<Movie> movieList = new ArrayList<>();
     private MoviesAdapter mAdapter;
-
     OkhttpHelper okhttpHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dashboard, null);
+        View view = inflater.inflate(R.layout.fragment_home, null);
         activity = (AppCompatActivity)this.getActivity();
+        okhttpHelper = OkhttpHelper.getOkhttpHelper() ;
+        ButterKnife.bind(this, view);
         InitUI(inflater, view);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        activity.getSupportActionBar().setTitle("toolbar title");
+        initCollapsingToolbar(inflater, view);
+
+        whiteScanSearchNotificationButton();
         return view;
     }
 
     private void InitUI(LayoutInflater inflater, View view) {
-        okhttpHelper = OkhttpHelper.getOkhttpHelper() ;
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        searchView = view.findViewById(R.id.head_search_rr);
-        searchButton = view.findViewById(R.id.head_btn_sousuo);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,57 +108,102 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
         });
 
         final Fragment me = this;
-        scanButton = view.findViewById(R.id.scanbtn);
-        scanButton.setOnClickListener(new View.OnClickListener() {
+        scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //new IntentIntegrator(activity).initiateScan();
-                IntentIntegrator.forSupportFragment(me).initiateScan();
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(me);
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.setCaptureActivity(CaptureActivityPortrait.class);
+                intentIntegrator.initiateScan();
             }
         });
-        scanImageView = view.findViewById(R.id.scanImageView);
-        scanImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //new IntentIntegrator(activity).initiateScan();
-                //IntentIntegrator.forSupportFragment(me).initiateScan();
-                String url="http://192.168.147.1:8081/qrLogin/scan?uuid=4ee8b561-649a-4550-b442-f61f592fb2cf";
-                //String url="http://www.google.com";
-                String userId="jack";
-                String token="tokenvalue";
-                Map< String , String > params = new HashMap<String, String>() ;
-                params.put("userId" , userId ) ;
-                params.put("token" , token ) ;
-                try {
-                    sendPost(url, userId, token);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
         /**
-         * 滑动标题栏渐变
+         * 滑动标题栏渐变, I use collapsible toolbar to control head_scan_search_notification bgcolor
          */
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //滑动的距离
-                mDistanceY += dy;
-                //toolbar的高度
-                int toolbarHeight = searchView.getBottom();
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                //滑动的距离
+//                mDistanceY += dy;
+//                //toolbar的高度
+//                int toolbarHeight = headView.getBottom();
+//
+//                //当滑动的距离 <= toolbar高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
+//                if (mDistanceY <= toolbarHeight) {
+//                    float scale = (float) mDistanceY / toolbarHeight;
+//                    float alpha = scale * 255;
+//                    headView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
+//                    Log.e("alpha", alpha+"");
+//                    if(Math.abs(scale)>=0.8){
+//                        blackScanSearchNotificationButton();
+//                    } else {
+//                        whiteScanSearchNotificationButton();
+//                    }
+//                } else {
+//                    //将标题栏的颜色设置为完全不透明状态
+//                    headView.setBackgroundResource(R.color.white);
+//                    blackScanSearchNotificationButton();
+//                }
+//            }
+//        });
 
-                //当滑动的距离 <= toolbar高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= toolbarHeight) {
-                    float scale = (float) mDistanceY / toolbarHeight;
-                    float alpha = scale * 255;
-                    searchView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
+        initRecyclerView(view, me);
+    }
+
+    private void initCollapsingToolbar(LayoutInflater inflater, View view) {
+        final CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(" aaa");
+        appBarLayout.setExpanded(true);
+
+        // hiding & showing the title when toolbar expanded & collapsed
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbar.setTitle(" show title");
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbar.setTitle(" aaa");
+                    isShow = false;
+                }
+                float scale = 1 - (float) appBarLayout.getBottom() / appBarLayout.getHeight();
+                float alpha = scale * 255;
+                headView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
+                if(appBarLayout.getBottom()<=300){
+                    blackScanSearchNotificationButton();
                 } else {
-                    //将标题栏的颜色设置为完全不透明状态
-                    searchView.setBackgroundResource(R.color.holo_blue);
+                    whiteScanSearchNotificationButton();
                 }
             }
         });
 
+    }
+
+    private void whiteScanSearchNotificationButton() {
+//        float scale = (float) appBarLayout.getBottom() / appBarLayout.getHeight();
+//        float alpha = scale * 255;
+//        headView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
+        searchButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        scanButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        notificationButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+    }
+
+    private void blackScanSearchNotificationButton() {
+//        headView.setBackgroundResource(R.color.white);
+        searchButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        scanButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        notificationButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+    }
+
+    private void initRecyclerView(View view, final Fragment me) {
         mAdapter = new MoviesAdapter(activity, movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(activity, 2);//new LinearLayoutManager(getApplicationContext());
         //RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -134,29 +212,27 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(activity, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-//        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerViewActivity.ClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//                Movie movie = movieList.get(position);
-//                Toast.makeText(getApplicationContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(me.getContext(), recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Movie movie = movieList.get(position);
+                Toast.makeText(me.getContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
+            }
 
-//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+            @Override
+            public void onLongClick(View view, int position) {
 
+            }
+        }));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
         prepareMovieData();
 
-//        try {
-//            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Glide.with(this).load(R.drawable.cover).into((ImageView) view.findViewById(R.id.backdrop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -196,7 +272,7 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
         Map< String , String > params = new HashMap<String, String>() ;
         params.put("userId" , userId ) ;
         params.put("token" , token ) ;
-        okhttpHelper.doPost(url, new HttpLoadingDialog<LoginRespMsg<User>>(activity){
+        okhttpHelper.doJSONPost(url, new HttpLoadingDialog<ResponseMsg>(activity){
 
             @Override
             public void onError(Response response, int responseCode, Exception e) throws IOException {
@@ -205,68 +281,40 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
             }
 
             @Override
-            public void callBackSucces(Response response, LoginRespMsg<User> userLoginRespMsg) throws IOException {
+            public void callBackSucces(Response response, ResponseMsg msg) throws IOException {
                 System.out.println(response.toString());
                 Toast.makeText(activity, "Response Message : " + response, Toast.LENGTH_LONG).show();
             }
         }, params);
     }
 
-    private void initCollapsingToolbar(LayoutInflater inflater, View view) {
-//        final CollapsingToolbarLayout collapsingToolbar =
-//                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-//        collapsingToolbar.setTitle(" aaa");
-//        AppBarLayout appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
-//        appBarLayout.setExpanded(true);
-//
-//        // hiding & showing the title when toolbar expanded & collapsed
-//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    collapsingToolbar.setTitle(getString(R.string.app_name));
-//                    isShow = true;
-//                } else if (isShow) {
-//                    collapsingToolbar.setTitle(" aaa");
-//                    isShow = false;
-//                }
-//            }
-//        });
-    }
-
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-//        if (viewHolder instanceof MoviesAdapter.MyViewHolder) {
-//            // get the removed item name to display it in snack bar
-//            String name = movieList.get(viewHolder.getAdapterPosition()).getTitle();
-//
-//            // backup of removed item for undo purpose
-//            final Movie deletedItem = movieList.get(viewHolder.getAdapterPosition());
-//            final int deletedIndex = viewHolder.getAdapterPosition();
-//
-//            // remove the item from recycler view
-//            mAdapter.removeItem(viewHolder.getAdapterPosition());
-//
-//            // showing snack bar with Undo option
-//            Snackbar snackbar = Snackbar
-//                    .make(coordinatorLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
-//            snackbar.setAction("UNDO", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    // undo is selected, restore the deleted item
-//                    mAdapter.restoreItem(deletedItem, deletedIndex);
-//                }
-//            });
-//            snackbar.setActionTextColor(Color.YELLOW);
-//            snackbar.show();
-//        }
+        if (viewHolder instanceof MoviesAdapter.MyViewHolder) {
+            // get the removed item name to display it in snack bar
+            String name = movieList.get(viewHolder.getAdapterPosition()).getTitle();
+
+            // backup of removed item for undo purpose
+            final Movie deletedItem = movieList.get(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
+
+            // remove the item from recycler view
+            mAdapter.removeItem(viewHolder.getAdapterPosition());
+
+            // showing snack bar with Undo option
+            Snackbar snackbar = Snackbar
+                    .make(entireHomeLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // undo is selected, restore the deleted item
+                    mAdapter.restoreItem(deletedItem, deletedIndex);
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
     }
 
 //    @Override
@@ -275,12 +323,12 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
 //
 //        // Associate searchable configuration with the SearchView
 //        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//        headView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        headView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        headView.setMaxWidth(Integer.MAX_VALUE);
 //
 //        // listening to search query text change
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//        headView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
 //                // filter recycler view when query submitted
@@ -319,8 +367,8 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
 //    @Override
 //    public void onBackPressed() {
 //        // close search view on back button pressed
-//        if (!searchView.isIconified()) {
-//            searchView.setIconified(true);
+//        if (!headView.isIconified()) {
+//            headView.setIconified(true);
 //            return;
 //        }
 //        super.onBackPressed();

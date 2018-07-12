@@ -11,7 +11,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +49,8 @@ public class DashboardFragment extends Fragment implements RecyclerItemTouchHelp
 
     private void InitUI(LayoutInflater inflater, View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        searchView = view.findViewById(R.id.head_search_rr);
-        searchButton = view.findViewById(R.id.head_btn_sousuo);
+        searchView = view.findViewById(R.id.head_scan_search_notification_layout_entire);
+        searchButton = view.findViewById(R.id.head_scan_search_notification_btn_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,12 +190,12 @@ public class DashboardFragment extends Fragment implements RecyclerItemTouchHelp
 //
 //        // Associate searchable configuration with the SearchView
 //        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//        headView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        headView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        headView.setMaxWidth(Integer.MAX_VALUE);
 //
 //        // listening to search query text change
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//        headView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
 //                // filter recycler view when query submitted
@@ -236,8 +234,8 @@ public class DashboardFragment extends Fragment implements RecyclerItemTouchHelp
 //    @Override
 //    public void onBackPressed() {
 //        // close search view on back button pressed
-//        if (!searchView.isIconified()) {
-//            searchView.setIconified(true);
+//        if (!headView.isIconified()) {
+//            headView.setIconified(true);
 //            return;
 //        }
 //        super.onBackPressed();

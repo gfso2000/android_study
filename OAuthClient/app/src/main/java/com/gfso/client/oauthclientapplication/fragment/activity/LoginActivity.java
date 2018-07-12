@@ -23,6 +23,7 @@ import com.gfso.client.oauthclientapplication.msg.ResponseMsg;
 import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
 import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
 import com.gfso.client.oauthclientapplication.util.Contents;
+import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mine_login_activity);
+        setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -120,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(password.getWindowToken(),0);
     }
 
-    private void doLogin( View v ){
+    private void doLogin( final View v ){
         final String userName = userId.getText().toString() ;
 
         if ( userName == null ){
@@ -143,6 +144,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(Response response, int responseCode, Exception e) throws IOException {
                 this.closeSpotsDialog();
+                Toast.makeText(v.getContext(), response.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Request request, IOException e) {
+                super.onFailure(request, e);
+                Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             @Override

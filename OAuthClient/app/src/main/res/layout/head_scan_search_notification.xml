@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/head_search_rr"
+    android:id="@+id/head_scan_search_notification_layout_entire"
     android:layout_width="match_parent"
     android:background="@mipmap/yinying"
     android:layout_height="wrap_content">
@@ -13,7 +13,7 @@
         android:layout_marginTop="10dp">
 
         <LinearLayout
-            android:id="@+id/head_ll"
+            android:id="@+id/head_scan_search_notification_layout_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -35,21 +35,20 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/head_rr"
+            android:id="@+id/head_notification_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/head_ll"
+            android:layout_alignBottom="@id/head_scan_search_notification_layout_scan"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/badge_layout1"
             android:layout_marginRight="15dp">
 
             <RelativeLayout
-                android:id="@+id/relative_layout1"
+                android:id="@+id/head_msg_layout"
                 android:layout_width="@dimen/def_height"
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/head_img_xiaoxi"
+                    android:id="@+id/head_img_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -57,9 +56,10 @@
                     android:src="@mipmap/xiaoxi" />
 
                 <TextView
+                    android:id="@+id/notificationbtn"
                     android:layout_width="32dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/head_img_xiaoxi"
+                    android:layout_below="@id/head_img_notification"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:text="消息"
@@ -68,10 +68,10 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/badge_notification_2"
+                android:id="@+id/head_badge_notification"
                 android:layout_width="24dp"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/relative_layout1"
+                android:layout_alignRight="@id/head_msg_layout"
                 android:background="@drawable/badge_item_count"
                 android:text="99+"
                 android:textAlignment="center"
@@ -82,17 +82,17 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/head_ll"
+            android:layout_alignBottom="@id/head_scan_search_notification_layout_scan"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="14dp"
             android:layout_marginRight="0dp"
-            android:layout_toLeftOf="@id/head_rr"
-            android:layout_toRightOf="@id/head_ll"
+            android:layout_toLeftOf="@id/head_notification_layout"
+            android:layout_toRightOf="@id/head_scan_search_notification_layout_scan"
             android:background="@mipmap/sousuokuang">
 
 
             <ImageView
-                android:id="@+id/head_img_sousuo"
+                android:id="@+id/head_img_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -100,12 +100,12 @@
                 android:src="@mipmap/sousuo" />
 
             <Button
-                android:id="@+id/head_btn_sousuo"
+                android:id="@+id/head_scan_search_notification_btn_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="7dp"
-                android:layout_toRightOf="@id/head_img_sousuo"
+                android:layout_toRightOf="@id/head_img_search"
                 android:background="@null"
                 android:text="阿斯顿马丁2016豪华限量版"
                 android:textSize="14sp" />

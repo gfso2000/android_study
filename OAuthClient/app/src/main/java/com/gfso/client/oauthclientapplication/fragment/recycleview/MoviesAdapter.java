@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.gfso.client.oauthclientapplication.R;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_view_item, parent, false);
+                .inflate(R.layout.recyclerview_album_item, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -69,26 +70,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         holder.year.setText(movie.getYear());
 
         // loading album cover using Glide library
-//        switch(position){
-//            case 1:
-//                Glide.with(mContext).load(R.drawable.album1).into(holder.thumbnail);
-//                break;
-//            case 2:
-//                Glide.with(mContext).load(R.drawable.album2).into(holder.thumbnail);
-//                break;
-//            case 3:
-//                Glide.with(mContext).load(R.drawable.album3).into(holder.thumbnail);
-//                break;
-//            case 4:
-//                Glide.with(mContext).load(R.drawable.album4).into(holder.thumbnail);
-//                break;
-//            case 5:
-//                Glide.with(mContext).load(R.drawable.album5).into(holder.thumbnail);
-//                break;
-//            default:
-//                Glide.with(mContext).load(R.drawable.album1).into(holder.thumbnail);
-//                break;
-//        }
+        switch(position){
+            case 1:
+                Glide.with(mContext).load(R.drawable.album1).into(holder.thumbnail);
+                break;
+            case 2:
+                Glide.with(mContext).load(R.drawable.album2).into(holder.thumbnail);
+                break;
+            case 3:
+                Glide.with(mContext).load(R.drawable.album3).into(holder.thumbnail);
+                break;
+            case 4:
+                Glide.with(mContext).load(R.drawable.album4).into(holder.thumbnail);
+                break;
+            case 5:
+                Glide.with(mContext).load(R.drawable.album5).into(holder.thumbnail);
+                break;
+            default:
+                Glide.with(mContext).load(R.drawable.album1).into(holder.thumbnail);
+                break;
+        }
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
