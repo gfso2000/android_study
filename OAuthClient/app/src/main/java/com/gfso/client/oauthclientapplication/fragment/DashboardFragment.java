@@ -1,300 +1,214 @@
 package com.gfso.client.oauthclientapplication.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.gfso.client.oauthclientapplication.CaptureActivityPortrait;
+import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
+import com.gfso.client.oauthclientapplication.bean.CategoryBean;
+import com.gfso.client.oauthclientapplication.fragment.task.ScanLoginTask;
+import com.gfso.client.oauthclientapplication.fragment.widget.CategoryAdapter;
+import com.gfso.client.oauthclientapplication.fragment.widget.SubcategoryGroupAdapter;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class DashboardFragment extends Fragment {
+    @BindView(R.id.head_scan_search_notification_layout_entire)
+    View headView;
+    @BindView(R.id.head_scan_search_notification_btn_search)
+    Button searchButton;
+    @BindView(R.id.scanbtn)
+    TextView scanButton;
+    @BindView(R.id.notificationbtn)
+    TextView notificationButton;
+    @BindView(R.id.head_scan_search_notification_layout_scan)
+    LinearLayout scanLayout;
+
     AppCompatActivity activity = null;
-    private RecyclerView recyclerView;
-    private View searchView;
-    private Button searchButton;
-    private TextView scanButton;
-    private ImageView scanImageView;
-    private int mDistanceY;
-    private List<Movie> movieList = new ArrayList<>();
-    private MoviesAdapter mAdapter;
+    @BindView(R.id.lv_category)
+    ListView lv_category;
+    @BindView(R.id.lv_subcategory_group)
+    ListView lv_subcategory_group;
+    @BindView(R.id.tv_subcategory_group_title)
+    TextView tv_subcategory_group_title;
+
+    private List<String> categoryList = new ArrayList<>();
+    private List<CategoryBean.DataBean> homeList = new ArrayList<>();
+    private List<Integer> showTitle;
+
+    private CategoryAdapter categoryAdapter;
+    private SubcategoryGroupAdapter subcategoryGroupAdapter;
+    private int currentItem;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, null);
         activity = (AppCompatActivity)this.getActivity();
-        InitUI(inflater, view);
+        Fresco.initialize(activity);
+        ButterKnife.bind(this, view);
+        blackScanSearchNotificationButton();
+        initHeader();
+        initView();
+        loadData();
         return view;
     }
 
-    private void InitUI(LayoutInflater inflater, View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        searchView = view.findViewById(R.id.head_scan_search_notification_layout_entire);
-        searchButton = view.findViewById(R.id.head_scan_search_notification_btn_search);
+    private void blackScanSearchNotificationButton() {
+        headView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+        searchButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        scanButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        notificationButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+    }
+
+    private void initHeader(){
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "Hello", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Hello Dashboard", Toast.LENGTH_SHORT).show();
             }
         });
-        scanButton = view.findViewById(R.id.scanbtn);
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, "scan", Toast.LENGTH_SHORT).show();
-            }
-        });
-        scanImageView = view.findViewById(R.id.scanImageView);
-        scanImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, "scan", Toast.LENGTH_SHORT).show();
-            }
-        });
-        /**
-         * 滑动标题栏渐变
-         */
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //滑动的距离
-                mDistanceY += dy;
-                //toolbar的高度
-                int toolbarHeight = searchView.getBottom();
 
-                //当滑动的距离 <= toolbar高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= toolbarHeight) {
-                    float scale = (float) mDistanceY / toolbarHeight;
-                    float alpha = scale * 255;
-                    searchView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
-                } else {
-                    //将标题栏的颜色设置为完全不透明状态
-                    searchView.setBackgroundResource(R.color.holo_blue);
+        final Fragment me = this;
+        scanLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(me);
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.setCaptureActivity(CaptureActivityPortrait.class);
+                intentIntegrator.initiateScan();
+            }
+        });
+    }
+
+    private void initView() {
+        categoryAdapter = new CategoryAdapter(activity, categoryList);
+        lv_category.setAdapter(categoryAdapter);
+
+        subcategoryGroupAdapter = new SubcategoryGroupAdapter(activity, homeList);
+        lv_subcategory_group.setAdapter(subcategoryGroupAdapter);
+
+        lv_category.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                categoryAdapter.setSelectItem(position);
+                categoryAdapter.notifyDataSetInvalidated();
+                tv_subcategory_group_title.setText(categoryList.get(position));
+                lv_subcategory_group.setSelection(showTitle.get(position));
+            }
+        });
+
+
+        lv_subcategory_group.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private int scrollState;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                this.scrollState = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    return;
+                }
+                int current = showTitle.indexOf(firstVisibleItem);
+//				lv_subcategory_group.setSelection(current);
+                if (currentItem != current && current >= 0) {
+                    currentItem = current;
+                    tv_subcategory_group_title.setText(categoryList.get(currentItem));
+                    categoryAdapter.setSelectItem(currentItem);
+                    categoryAdapter.notifyDataSetInvalidated();
                 }
             }
         });
-
-        mAdapter = new MoviesAdapter(activity, movieList);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(activity, 2);//new LinearLayoutManager(getApplicationContext());
-        //RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(activity, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(mAdapter);
-//        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerViewActivity.ClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//                Movie movie = movieList.get(position);
-//                Toast.makeText(getApplicationContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
-
-//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
-
-        prepareMovieData();
-
-//        try {
-//            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
-    private void initCollapsingToolbar(LayoutInflater inflater, View view) {
-//        final CollapsingToolbarLayout collapsingToolbar =
-//                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-//        collapsingToolbar.setTitle(" aaa");
-//        AppBarLayout appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
-//        appBarLayout.setExpanded(true);
-//
-//        // hiding & showing the title when toolbar expanded & collapsed
-//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    collapsingToolbar.setTitle(getString(R.string.app_name));
-//                    isShow = true;
-//                } else if (isShow) {
-//                    collapsingToolbar.setTitle(" aaa");
-//                    isShow = false;
-//                }
-//            }
-//        });
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(activity, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(activity, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                String urlStr = result.getContents();
+                try {
+                    //have to call http in another thread, otherwise it will throw exception(networkOnMainThread)
+                    ScanLoginTask task = new ScanLoginTask(activity);
+                    String userId = MyApplication.getInstance().getUser().getUsername();
+                    String token = MyApplication.getInstance().getToken();
+                    task.execute(urlStr, userId, token);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-//        if (viewHolder instanceof MoviesAdapter.MyViewHolder) {
-//            // get the removed item name to display it in snack bar
-//            String name = movieList.get(viewHolder.getAdapterPosition()).getTitle();
-//
-//            // backup of removed item for undo purpose
-//            final Movie deletedItem = movieList.get(viewHolder.getAdapterPosition());
-//            final int deletedIndex = viewHolder.getAdapterPosition();
-//
-//            // remove the item from recycler view
-//            mAdapter.removeItem(viewHolder.getAdapterPosition());
-//
-//            // showing snack bar with Undo option
-//            Snackbar snackbar = Snackbar
-//                    .make(coordinatorLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
-//            snackbar.setAction("UNDO", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    // undo is selected, restore the deleted item
-//                    mAdapter.restoreItem(deletedItem, deletedIndex);
-//                }
-//            });
-//            snackbar.setActionTextColor(Color.YELLOW);
-//            snackbar.show();
-//        }
+    private void loadData() {
+        String json = getJson(activity, "category.json");
+        CategoryBean categoryBean = JSONObject.parseObject(json, CategoryBean.class);
+        showTitle = new ArrayList<>();
+        for (int i = 0; i < categoryBean.getData().size(); i++) {
+            CategoryBean.DataBean dataBean = categoryBean.getData().get(i);
+            categoryList.add(dataBean.getModuleTitle());
+            showTitle.add(i);
+            homeList.add(dataBean);
+        }
+        tv_subcategory_group_title.setText(categoryBean.getData().get(0).getModuleTitle());
+
+        categoryAdapter.notifyDataSetChanged();
+        subcategoryGroupAdapter.notifyDataSetChanged();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.album_filter, menu);
-//
-//        // Associate searchable configuration with the SearchView
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        headView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-//        headView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        headView.setMaxWidth(Integer.MAX_VALUE);
-//
-//        // listening to search query text change
-//        headView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                // filter recycler view when query submitted
-//                mAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String query) {
-//                // filter recycler view when text is changed
-//                mAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//        });
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_search) {
-//            return true;
-//        } else if(id == android.R.id.home) {
-//            onBackPressed();
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-//    @Override
-//    public void onBackPressed() {
-//        // close search view on back button pressed
-//        if (!headView.isIconified()) {
-//            headView.setIconified(true);
-//            return;
-//        }
-//        super.onBackPressed();
-//    }
-
-    public interface ClickListener {
-        void onClick(View view, int position);
-        void onLongClick(View view, int position);
-    }
-
-    private void prepareMovieData() {
-        Movie movie = new Movie("Mad Max: Fury Road", "Action & Adventure", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Inside Out", "Animation, Kids & Family", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Star Wars: Episode VII - The Force Awakens", "Action", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Shaun the Sheep", "Animation", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("The Martian", "Science Fiction & Fantasy", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Mission: Impossible Rogue Nation", "Action", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Up", "Animation", "2009");
-        movieList.add(movie);
-
-        movie = new Movie("Star Trek", "Science Fiction", "2009");
-        movieList.add(movie);
-
-        movie = new Movie("The LEGO Movie", "Animation", "2014");
-        movieList.add(movie);
-
-        movie = new Movie("Iron Man", "Action & Adventure", "2008");
-        movieList.add(movie);
-
-        movie = new Movie("Aliens", "Science Fiction", "1986");
-        movieList.add(movie);
-
-        movie = new Movie("Chicken Run", "Animation", "2000");
-        movieList.add(movie);
-
-        movie = new Movie("Back to the Future", "Science Fiction", "1985");
-        movieList.add(movie);
-
-        movie = new Movie("Raiders of the Lost Ark", "Action & Adventure", "1981");
-        movieList.add(movie);
-
-        movie = new Movie("Goldfinger", "Action & Adventure", "1965");
-        movieList.add(movie);
-
-        movie = new Movie("Guardians of the Galaxy", "Science Fiction & Fantasy", "2014");
-        movieList.add(movie);
-
-        mAdapter.notifyDataSetChanged();
+    public static String getJson(Context context, String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        //获得assets资源管理器
+        AssetManager assetManager = context.getAssets();
+        //使用IO流读取json文件内容
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    assetManager.open(fileName), "utf-8"));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
     }
 }

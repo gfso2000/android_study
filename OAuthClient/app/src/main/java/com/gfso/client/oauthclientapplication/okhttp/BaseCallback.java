@@ -1,12 +1,13 @@
 package com.gfso.client.oauthclientapplication.okhttp;
 
 import com.google.gson.internal.$Gson$Types;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by 博 on 2017/8/22.

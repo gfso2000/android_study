@@ -10,13 +10,15 @@ import com.gfso.client.oauthclientapplication.exception.GET_RESPONSE_MESSAGE_FAI
 import com.gfso.client.oauthclientapplication.exception.GSON_ANALYZE_MESSAGE_FAILURE;
 import com.gfso.client.oauthclientapplication.util.JsonUtil;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,15 +41,13 @@ public class OkhttpHelper {
 
 
     private OkhttpHelper(){
-        client = new OkHttpClient() ;
-        client.setConnectTimeout(5 , TimeUnit.SECONDS);
-        client.setWriteTimeout(5 , TimeUnit.SECONDS);
-        client.setReadTimeout(5 , TimeUnit.SECONDS);
-
+        client = new OkHttpClient.Builder()
+                .connectTimeout(5 , TimeUnit.SECONDS)
+                .writeTimeout(5 , TimeUnit.SECONDS)
+                .readTimeout(5 , TimeUnit.SECONDS)
+                .build();
         gson = new Gson() ;
-
         handler = new Handler(Looper.getMainLooper()) ;
-
     }
 
     public static OkhttpHelper getOkhttpHelper(){
@@ -80,14 +80,14 @@ public class OkhttpHelper {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 //提交失败
-                callbackFailure(callback , request , e); ;
+                callbackFailure(callback , call.request() , e); ;
                 Log.e("Okhttp 提交请求失败" , "------>"+e) ;
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
 
                 if(response.isSuccessful()){
                     //提交成功，得到回返信息
@@ -129,15 +129,14 @@ public class OkhttpHelper {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 //提交失败
-                callbackFailure(callback , request , e); ;
+                callbackFailure(callback , call.request() , e); ;
                 Log.e("Okhttp 提交请求失败" , "------>"+e) ;
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
-
+            public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()){
                     //提交成功，得到回返信息
                     String jqury = response.body().string() ;
@@ -167,6 +166,7 @@ public class OkhttpHelper {
 
                 }
             }
+
         });
     }
 
@@ -225,9 +225,9 @@ public class OkhttpHelper {
     private RequestBody buildFormData (Map<String , String> formData){
 
         if(formData != null) {
-            FormEncodingBuilder formEncodingBuilder = new FormEncodingBuilder() ;
+            FormBody.Builder FormBody = new FormBody.Builder() ;
             for (Map.Entry<String, String> objectMap : formData.entrySet()){
-                formEncodingBuilder.add( objectMap.getKey() , objectMap.getValue() ) ;
+                FormBody.add( objectMap.getKey() , objectMap.getValue() ) ;
             }
 
             String token = MyApplication.getInstance().getToken() ;
@@ -235,9 +235,9 @@ public class OkhttpHelper {
             Log.d("----","----------------token------"+token+"-----------------------");
 
             if (!TextUtils.isEmpty(token)){
-                formEncodingBuilder.add("token" , token) ;
+                FormBody.add("token" , token) ;
             }
-            return formEncodingBuilder.build() ;
+            return FormBody.build() ;
         }
         return null ;
     }

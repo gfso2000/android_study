@@ -17,6 +17,7 @@
     <style name="line">
         <item name="android:background">@color/white</item>
     </style>
+
     <style name="line_vertical">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
@@ -38,4 +39,8 @@
 
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
+
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

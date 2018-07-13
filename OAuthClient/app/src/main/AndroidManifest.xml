@@ -47,11 +47,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".fragment.activity.LoginActivity" />
-        <activity android:name=".CaptureActivityPortrait"
+        <activity
+            android:name=".CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/zxing_CaptureTheme"></activity>
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>

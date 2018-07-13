@@ -20,11 +20,9 @@ import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.User;
 import com.gfso.client.oauthclientapplication.fragment.widget.MyEditText;
 import com.gfso.client.oauthclientapplication.msg.ResponseMsg;
-import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
 import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
+import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
 import com.gfso.client.oauthclientapplication.util.Contents;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +30,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.button_log)

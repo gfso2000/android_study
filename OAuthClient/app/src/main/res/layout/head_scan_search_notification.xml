@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/head_scan_search_notification_layout_entire"
     android:layout_width="match_parent"
-    android:background="@mipmap/yinying"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@mipmap/yinying">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="14.5dp"
-        android:layout_marginTop="10dp">
+        android:layout_margin="10dp">
 
         <LinearLayout
             android:id="@+id/head_scan_search_notification_layout_scan"
@@ -39,12 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/head_scan_search_notification_layout_scan"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp">
+            android:layout_alignParentRight="true">
 
             <RelativeLayout
                 android:id="@+id/head_msg_layout"
-                android:layout_width="@dimen/def_height"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <ImageView
@@ -84,8 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/head_scan_search_notification_layout_scan"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/head_notification_layout"
             android:layout_toRightOf="@id/head_scan_search_notification_layout_scan"
             android:background="@mipmap/sousuokuang">

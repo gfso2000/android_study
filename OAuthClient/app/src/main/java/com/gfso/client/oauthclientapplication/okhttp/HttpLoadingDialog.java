@@ -6,12 +6,12 @@ import android.widget.Toast;
 
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
 import dmax.dialog.SpotsDialog;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public abstract class HttpLoadingDialog<T> extends BaseCallback<T> {
 

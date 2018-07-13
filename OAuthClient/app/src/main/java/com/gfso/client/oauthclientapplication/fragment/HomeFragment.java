@@ -2,7 +2,6 @@ package com.gfso.client.oauthclientapplication.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,27 +36,18 @@ import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerTouchListener;
-import com.gfso.client.oauthclientapplication.msg.ResponseMsg;
+import com.gfso.client.oauthclientapplication.fragment.task.ScanLoginTask;
 import com.gfso.client.oauthclientapplication.okhttp.OkhttpHelper;
-import com.gfso.client.oauthclientapplication.okhttp.HttpLoadingDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.squareup.okhttp.Response;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static java.lang.Math.abs;
-
 public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
-    @BindView(R.id.fragment_home_recyclerview)
-    RecyclerView recyclerView;
     @BindView(R.id.head_scan_search_notification_layout_entire)
     View headView;
     @BindView(R.id.head_scan_search_notification_btn_search)
@@ -69,6 +58,9 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
     TextView notificationButton;
     @BindView(R.id.head_scan_search_notification_layout_scan)
     LinearLayout scanLayout;
+
+    @BindView(R.id.fragment_home_recyclerview)
+    RecyclerView recyclerView;
     @BindView(R.id.fragment_home_layout_entire)
     RelativeLayout entireHomeLayout;
     @BindView(R.id.appbar)
@@ -100,23 +92,8 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
     }
 
     private void InitUI(LayoutInflater inflater, View view) {
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, "Hello", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         final Fragment me = this;
-        scanLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(me);
-                intentIntegrator.setOrientationLocked(true);
-                intentIntegrator.setCaptureActivity(CaptureActivityPortrait.class);
-                intentIntegrator.initiateScan();
-            }
-        });
+        initHeader();
 
         /**
          * 滑动标题栏渐变, I use collapsible toolbar to control head_scan_search_notification bgcolor
@@ -149,6 +126,26 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
 //        });
 
         initRecyclerView(view, me);
+    }
+
+    private void initHeader(){
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(activity, "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final Fragment me = this;
+        scanLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(me);
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.setCaptureActivity(CaptureActivityPortrait.class);
+                intentIntegrator.initiateScan();
+            }
+        });
     }
 
     private void initCollapsingToolbar(LayoutInflater inflater, View view) {
@@ -188,16 +185,12 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
     }
 
     private void whiteScanSearchNotificationButton() {
-//        float scale = (float) appBarLayout.getBottom() / appBarLayout.getHeight();
-//        float alpha = scale * 255;
-//        headView.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
         searchButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         scanButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         notificationButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
     }
 
     private void blackScanSearchNotificationButton() {
-//        headView.setBackgroundResource(R.color.white);
         searchButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         scanButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         notificationButton.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
@@ -245,7 +238,7 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
                 String urlStr = result.getContents();
                 try {
                     //have to call http in another thread, otherwise it will throw exception(networkOnMainThread)
-                    SendTask task = new SendTask();
+                    ScanLoginTask task = new ScanLoginTask(activity);
                     String userId = MyApplication.getInstance().getUser().getUsername();
                     String token = MyApplication.getInstance().getToken();
                     task.execute(urlStr, userId, token);
@@ -256,36 +249,6 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-    class SendTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                sendPost(params[0],params[1],params[2]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-    private void sendPost(String url, String userId, String token) throws Exception {
-        Map< String , String > params = new HashMap<String, String>() ;
-        params.put("userId" , userId ) ;
-        params.put("token" , token ) ;
-        okhttpHelper.doJSONPost(url, new HttpLoadingDialog<ResponseMsg>(activity){
-
-            @Override
-            public void onError(Response response, int responseCode, Exception e) throws IOException {
-                System.out.println(response.toString());
-                Toast.makeText(activity, "Response Message : " + response, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void callBackSucces(Response response, ResponseMsg msg) throws IOException {
-                System.out.println(response.toString());
-                Toast.makeText(activity, "Response Message : " + response, Toast.LENGTH_LONG).show();
-            }
-        }, params);
     }
 
     @Override
