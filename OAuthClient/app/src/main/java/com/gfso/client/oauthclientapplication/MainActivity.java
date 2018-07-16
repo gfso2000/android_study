@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.gfso.client.oauthclientapplication.fragment.DashboardFragment;
 import com.gfso.client.oauthclientapplication.fragment.HomeFragment;
 import com.gfso.client.oauthclientapplication.fragment.MeFragment;
+import com.gfso.client.oauthclientapplication.fragment.ShoppingFragment;
 import com.gfso.client.oauthclientapplication.fragment.widget.CustomViewPager;
 import com.gfso.client.oauthclientapplication.fragment.widget.CustomViewPagerAdapter;
 
@@ -39,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_dashboard:
                     viewPager.setCurrentItem(1);
                     break;
-                case R.id.navigation_notifications:
+                case R.id.navigation_shopping:
                     viewPager.setCurrentItem(2);
+                    break;
+                case R.id.navigation_notifications:
+                    viewPager.setCurrentItem(3);
                     break;
             }
             return true;
@@ -56,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
         CustomViewPagerAdapter adapter = new CustomViewPagerAdapter (MainActivity.this.getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "home");
         adapter.addFragment(new DashboardFragment(), "dashboard");
+        adapter.addFragment(new ShoppingFragment(), "shopping");
         adapter.addFragment(new MeFragment(), "me");
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         //loading the default fragment
         viewPager.setCurrentItem(0);
 

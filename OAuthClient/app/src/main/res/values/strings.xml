@@ -2,6 +2,7 @@
     <string name="app_name">OAuth Client Application</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_shopping">Shopping</string>
     <string name="title_me">Me</string>
     <string name="title_activity_category">CategoryActivity</string>
 </resources>

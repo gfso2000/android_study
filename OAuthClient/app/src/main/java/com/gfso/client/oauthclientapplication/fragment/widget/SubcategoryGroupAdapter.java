@@ -15,17 +15,17 @@ import java.util.List;
 public class SubcategoryGroupAdapter extends BaseAdapter {
 
     private Context context;
-    private List<CategoryBean.DataBean> foodDatas;
+    private List<CategoryBean.DataBean> subcategoryList;
 
-    public SubcategoryGroupAdapter(Context context, List<CategoryBean.DataBean> foodDatas) {
+    public SubcategoryGroupAdapter(Context context, List<CategoryBean.DataBean> subcategoryList) {
         this.context = context;
-        this.foodDatas = foodDatas;
+        this.subcategoryList = subcategoryList;
     }
 
     @Override
     public int getCount() {
-        if (foodDatas != null) {
-            return foodDatas.size();
+        if (subcategoryList != null) {
+            return subcategoryList.size();
         } else {
             return 10;
         }
@@ -33,7 +33,7 @@ public class SubcategoryGroupAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return foodDatas.size();
+        return subcategoryList.size();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SubcategoryGroupAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CategoryBean.DataBean dataBean = foodDatas.get(position);
+        CategoryBean.DataBean dataBean = subcategoryList.get(position);
         List<CategoryBean.DataBean.DataListBean> dataList = dataBean.getDataList();
         ViewHold viewHold = null;
         if (convertView == null) {
