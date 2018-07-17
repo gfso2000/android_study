@@ -48,6 +48,7 @@ public class MultiTypeItemAdapter extends BaseMultiItemQuickAdapter<MultiTypeIte
         addItemType(MultiTypeItemBean.TYPE_7, R.layout.item_type7);
         addItemType(MultiTypeItemBean.TYPE_8, R.layout.item_type8);
         addItemType(MultiTypeItemBean.TYPE_9, R.layout.item_type9);
+        addItemType(MultiTypeItemBean.TYPE_10, R.layout.item_type10);
     }
 
     @Override

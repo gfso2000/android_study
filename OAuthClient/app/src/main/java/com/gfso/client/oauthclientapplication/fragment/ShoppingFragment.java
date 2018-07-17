@@ -5,12 +5,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Visibility;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +55,8 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
     RecyclerView recyclerView;
     @BindView(R.id.shopping_swipe_layout)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.shopping_return_top)
+    FloatingActionButton backToTopButton;
 
     AppCompatActivity activity = null;
 
@@ -73,13 +78,36 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
         final MultiTypeItemAdapter multipleItemAdapter = new MultiTypeItemAdapter(data, activity);
         final GridLayoutManager manager = new GridLayoutManager(activity, MultiTypeItemBean.TYPE_SPAN_SIZE_20);
         recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(multipleItemAdapter);
         multipleItemAdapter.setSpanSizeLookup(new BaseQuickAdapter.SpanSizeLookup() {
             @Override
             public int getSpanSize(GridLayoutManager gridLayoutManager, int position) {
                 return data.get(position).getSpanSize();
             }
         });
-        recyclerView.setAdapter(multipleItemAdapter);
+        multipleItemAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener(){
+            @Override
+            public void onLoadMoreRequested() {
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "loaded", Toast.LENGTH_SHORT).show();
+                        multipleItemAdapter.addData(new MultiTypeItemBean(MultiTypeItemBean.TYPE_9, MultiTypeItemBean.TYPE_SPAN_SIZE_10));
+                        multipleItemAdapter.addData(new MultiTypeItemBean(MultiTypeItemBean.TYPE_9, MultiTypeItemBean.TYPE_SPAN_SIZE_10));
+                        multipleItemAdapter.loadMoreComplete();
+
+                        //if no more data, then call loadMoreEnd(), it means, the loadMore will never be triggered
+                        //multipleItemAdapter.notifyDataSetChanged();
+                        if(multipleItemAdapter.getData().size()>=36){
+                            multipleItemAdapter.loadMoreEnd(true);
+                            data.add(new MultiTypeItemBean(MultiTypeItemBean.TYPE_10, MultiTypeItemBean.TYPE_SPAN_SIZE_20));
+                        }
+
+                        recyclerView.scrollToPosition(multipleItemAdapter.getData().size() - 1);
+                    }
+                }, 2000);
+            }
+        }, recyclerView);
 
         recyclerView.addOnItemTouchListener(new OnItemClickListener() {
 
@@ -89,6 +117,35 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
         });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                int offset = recyclerView.computeVerticalScrollOffset();
+                int extent = recyclerView.computeVerticalScrollExtent();
+//                int range = recyclerView.computeVerticalScrollRange();
+//
+//                int percentage = (int)(100.0 * offset / (float)(range - extent));
+//                Log.e("offset", offset+":"+extent+":"+range);
+//                Log.e("RecyclerView", "scroll percentage: "+ percentage + "%");
+                //extend is always the screen height, if scrolled 3 pages height, then show fab
+                if (offset > 3 * extent) {
+                    backToTopButton.show();
+                } else {
+                    backToTopButton.hide();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+        backToTopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.scrollToPosition(0);
+                backToTopButton.hide();
+            }
+        });
+
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, android.R.color.holo_green_dark),
                 ContextCompat.getColor(activity, android.R.color.holo_red_dark),
@@ -201,7 +258,7 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
         data.add(new MultiTypeItemBean(MultiTypeItemBean.TYPE_2, MultiTypeItemBean.TYPE_SPAN_SIZE_20));
 
         //推荐商品
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             data.add(new MultiTypeItemBean(MultiTypeItemBean.TYPE_9, MultiTypeItemBean.TYPE_SPAN_SIZE_10));
         }
 

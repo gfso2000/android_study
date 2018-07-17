@@ -15,6 +15,7 @@ public class MultiTypeItemBean implements MultiItemEntity {
     public static final int TYPE_7 = 7;//宽分割线
     public static final int TYPE_8 = 8;//猜你喜欢
     public static final int TYPE_9 = 9;//推荐商品
+    public static final int TYPE_10 = 10;//end line
 
     //权重
     public static final int TYPE_SPAN_SIZE_4 = 4;
