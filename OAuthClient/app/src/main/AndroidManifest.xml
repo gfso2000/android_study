@@ -53,7 +53,8 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".fragment.activity.AddressActivity"></activity>
+        <activity android:name=".fragment.activity.AddressActivity" />
+        <activity android:name=".fragment.activity.EditAddressActivity"></activity>
     </application>
 
 </manifest>

@@ -12,7 +12,8 @@ public class PreferenceUtil {
     private static SharedPreferences sharedPreferences = null ;
     private static SharedPreferences.Editor editor = null ;
     private static Context mcontext = null ;
-    public static String CAINIAO_SHOPPING = "cainiao_shopping" ;
+    public static String SHOPPING_CART = "shopping_cart" ;
+    public static String ADDRESSES = "addresses" ;
 
     private static void GetPreferenceUtil(Context context) {
         mcontext = context ;

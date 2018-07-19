@@ -29,11 +29,11 @@ import butterknife.ButterKnife;
 
 public class CartFragment extends Fragment {
     @BindView(R.id.cart_recycleView)
-    RecyclerView recyclerView ;
+    RecyclerView recyclerView;
     @BindView(R.id.cart_total_textview)
-    TextView sumPrice ;
+    TextView sumPrice;
     @BindView(R.id.cart_selectall_checkbox)
-    CheckBox allChooseCheckBox ;
+    CheckBox allChooseCheckBox;
     @BindView(R.id.cart_edit)
     TextView editBtn;
     @BindView(R.id.cart_pay_button)
@@ -111,7 +111,6 @@ public class CartFragment extends Fragment {
         List<ShoppingCartItem> shoppingCarts = cartProvider.getAll();
         if (shoppingCarts != null && shoppingCarts.size() > 0){
             cartAdapter = new CartAdapter(activity) ;
-            Log.e("----" , ""+shoppingCarts.get(0).getName()) ;
             recyclerView.setAdapter(cartAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(activity));
             recyclerView.addItemDecoration(new MyDivider());

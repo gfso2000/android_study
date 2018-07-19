@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gfso.client.oauthclientapplication.R;
+import com.gfso.client.oauthclientapplication.fragment.activity.AddressActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
 import com.gfso.client.oauthclientapplication.util.Contents;
 
@@ -24,10 +25,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class MeFragment extends Fragment {
     AppCompatActivity activity = null;
-    ImageView photoView = null;
-
+    @BindView(R.id.tb_user_photo)
+    ImageView photoView;
     @BindView(R.id.tb_user_name)
-    TextView userIdView ;
+    TextView userIdView;
+    @BindView(R.id.my_address)
+    TextView addressView;
 
     @Nullable
     @Override
@@ -36,12 +39,18 @@ public class MeFragment extends Fragment {
         activity = (AppCompatActivity)this.getActivity();
         ButterKnife.bind(this, view);
 
-        photoView = view.findViewById(R.id.tb_user_photo);
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity , LoginActivity.class) ;
                 startActivityForResult(intent , Contents.LOGIN_REQUEST);
+            }
+        });
+        addressView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity , AddressActivity.class) ;
+                startActivity(intent);
             }
         });
         return view;

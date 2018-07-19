@@ -71,11 +71,11 @@ public class CartProvider {
     private void saveToLocal(){
         List<ShoppingCartItem> carts = new ArrayList<ShoppingCartItem>();
         carts.addAll(map.values());
-        PreferenceUtil.putString(context ,PreferenceUtil.CAINIAO_SHOPPING , JsonUtil.toJSON(carts));
+        PreferenceUtil.putString(context ,PreferenceUtil.SHOPPING_CART, JsonUtil.toJSON(carts));
     }
 
     private List<ShoppingCartItem> getFromLocal(){
-        String json = PreferenceUtil.getString(context ,PreferenceUtil.CAINIAO_SHOPPING , null ) ;
+        String json = PreferenceUtil.getString(context ,PreferenceUtil.SHOPPING_CART, null ) ;
         Log.d("----" , "---"+json) ;
         List<ShoppingCartItem> carts = new ArrayList<>() ;
         if (json != null && json.length() > 0 ){
