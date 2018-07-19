@@ -16,11 +16,6 @@ import android.view.View;
 
 import com.gfso.client.oauthclientapplication.R;
 
-
-/**
- * Created by 博 on 2017/7/22.
- */
-
 public class MyEditText extends AppCompatEditText implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
 
 

@@ -12,8 +12,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Visibility;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +28,7 @@ import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.MultiTypeItemBean;
 import com.gfso.client.oauthclientapplication.fragment.task.ScanLoginTask;
-import com.gfso.client.oauthclientapplication.fragment.widget.MultiTypeItemAdapter;
+import com.gfso.client.oauthclientapplication.fragment.recycleview.MultiTypeItemAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 

@@ -3,17 +3,17 @@ package com.gfso.client.oauthclientapplication;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import com.gfso.client.oauthclientapplication.fragment.CartFragment;
 import com.gfso.client.oauthclientapplication.fragment.DashboardFragment;
 import com.gfso.client.oauthclientapplication.fragment.HomeFragment;
 import com.gfso.client.oauthclientapplication.fragment.MeFragment;
 import com.gfso.client.oauthclientapplication.fragment.ShoppingFragment;
 import com.gfso.client.oauthclientapplication.fragment.widget.CustomViewPager;
-import com.gfso.client.oauthclientapplication.fragment.widget.CustomViewPagerAdapter;
+import com.gfso.client.oauthclientapplication.fragment.recycleview.CustomViewPagerAdapter;
+import com.gfso.client.oauthclientapplication.util.BottomNavigationViewHelper;
 
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -37,14 +37,17 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
                     break;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_category:
                     viewPager.setCurrentItem(1);
                     break;
                 case R.id.navigation_shopping:
                     viewPager.setCurrentItem(2);
                     break;
-                case R.id.navigation_notifications:
+                case R.id.navigation_cart:
                     viewPager.setCurrentItem(3);
+                    break;
+                case R.id.navigation_me:
+                    viewPager.setCurrentItem(4);
                     break;
             }
             return true;
@@ -61,14 +64,16 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new HomeFragment(), "home");
         adapter.addFragment(new DashboardFragment(), "dashboard");
         adapter.addFragment(new ShoppingFragment(), "shopping");
+        adapter.addFragment(new CartFragment(), "cart");
         adapter.addFragment(new MeFragment(), "me");
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(5);
         //loading the default fragment
         viewPager.setCurrentItem(0);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottomnavigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
         trustAllCertificates();
     }
 

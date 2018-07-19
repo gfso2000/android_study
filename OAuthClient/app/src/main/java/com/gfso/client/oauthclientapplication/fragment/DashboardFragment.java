@@ -28,8 +28,8 @@ import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.CategoryBean;
 import com.gfso.client.oauthclientapplication.fragment.task.ScanLoginTask;
-import com.gfso.client.oauthclientapplication.fragment.widget.CategoryAdapter;
-import com.gfso.client.oauthclientapplication.fragment.widget.SubcategoryGroupAdapter;
+import com.gfso.client.oauthclientapplication.fragment.recycleview.CategoryAdapter;
+import com.gfso.client.oauthclientapplication.fragment.recycleview.SubcategoryGroupAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 

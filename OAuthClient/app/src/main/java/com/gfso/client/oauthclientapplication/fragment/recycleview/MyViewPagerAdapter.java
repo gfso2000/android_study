@@ -1,4 +1,4 @@
-package com.gfso.client.oauthclientapplication.fragment.widget;
+package com.gfso.client.oauthclientapplication.fragment.recycleview;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;

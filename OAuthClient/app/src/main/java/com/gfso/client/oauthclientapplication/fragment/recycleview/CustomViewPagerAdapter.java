@@ -1,4 +1,4 @@
-package com.gfso.client.oauthclientapplication.fragment.widget;
+package com.gfso.client.oauthclientapplication.fragment.recycleview;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

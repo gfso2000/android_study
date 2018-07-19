@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gfso.client.oauthclientapplication.R;
+import com.gfso.client.oauthclientapplication.bean.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

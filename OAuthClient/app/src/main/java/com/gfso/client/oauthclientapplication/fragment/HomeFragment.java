@@ -32,7 +32,7 @@ import com.bumptech.glide.Glide;
 import com.gfso.client.oauthclientapplication.CaptureActivityPortrait;
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
-import com.gfso.client.oauthclientapplication.fragment.recycleview.Movie;
+import com.gfso.client.oauthclientapplication.bean.Movie;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MoviesAdapter;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerItemTouchHelper;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.RecyclerTouchListener;

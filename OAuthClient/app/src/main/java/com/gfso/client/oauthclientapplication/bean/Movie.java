@@ -1,4 +1,4 @@
-package com.gfso.client.oauthclientapplication.fragment.recycleview;
+package com.gfso.client.oauthclientapplication.bean;
 
 /**
  * Created by I325639 on 1/15/2018.

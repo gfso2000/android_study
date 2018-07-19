@@ -1,4 +1,4 @@
-package com.gfso.client.oauthclientapplication.fragment.widget;
+package com.gfso.client.oauthclientapplication.fragment.recycleview;
 
 import android.content.Context;
 import android.os.Handler;
@@ -38,7 +38,7 @@ public class MultiTypeItemAdapter extends BaseMultiItemQuickAdapter<MultiTypeIte
     public MultiTypeItemAdapter(List<MultiTypeItemBean> data, Context context) {
         super(data);
         this.context = context;
-        addItemType(MultiTypeItemBean.TYPE_0, R.layout.head);
+        addItemType(MultiTypeItemBean.TYPE_0, R.layout.item_type0);
         addItemType(MultiTypeItemBean.TYPE_1, R.layout.item_type1);
         addItemType(MultiTypeItemBean.TYPE_2, R.layout.item_type2_divider_h);
         addItemType(MultiTypeItemBean.TYPE_3, R.layout.item_type3);

@@ -1,4 +1,4 @@
-package com.gfso.client.oauthclientapplication.fragment.widget;
+package com.gfso.client.oauthclientapplication.fragment.recycleview;
 
 import android.content.Context;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.CategoryBean;
+import com.gfso.client.oauthclientapplication.fragment.widget.GridViewForScrollView;
 
 import java.util.List;
 
