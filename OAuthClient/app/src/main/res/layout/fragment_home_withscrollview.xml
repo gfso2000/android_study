@@ -98,5 +98,5 @@
         </RelativeLayout>
         </android.support.design.widget.CoordinatorLayout>
     </ScrollView >
-    <include layout="@layout/head_scan_search_notification" />
+    <include layout="@layout/include_head_scan_search_notification" />
 </RelativeLayout>

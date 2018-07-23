@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements RecyclerItemTouchHelper.Re
         initHeader();
 
         /**
-         * 滑动标题栏渐变, I use collapsible toolbar to control head_scan_search_notification bgcolor
+         * 滑动标题栏渐变, I use collapsible toolbar to control include_head_scan_search_notification bgcolor
          */
 //        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override

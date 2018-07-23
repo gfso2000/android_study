@@ -92,5 +92,5 @@
                 android:layout_marginTop="8dp"/>
             </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
-    <include layout="@layout/head_scan_search_notification" />
+    <include layout="@layout/include_head_scan_search_notification" />
 </RelativeLayout>

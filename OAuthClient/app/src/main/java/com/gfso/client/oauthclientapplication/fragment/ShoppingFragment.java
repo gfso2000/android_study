@@ -24,6 +24,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gfso.client.oauthclientapplication.CaptureActivityPortrait;
+import com.gfso.client.oauthclientapplication.GoodsDetailActivity;
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.MultiTypeItemBean;
@@ -111,6 +112,8 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(activity, GoodsDetailActivity.class);
+                activity.startActivity(intent);
                 Toast.makeText(activity, "position:" + Integer.toString(position), Toast.LENGTH_SHORT).show();
             }
 
