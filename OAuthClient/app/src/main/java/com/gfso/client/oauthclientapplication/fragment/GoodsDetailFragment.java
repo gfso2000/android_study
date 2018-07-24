@@ -45,7 +45,6 @@ public class GoodsDetailFragment extends Fragment implements View.OnClickListene
     private Fragment nowFragment;
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
-    private View rootView;
     AppCompatActivity activity = null;
 
     public GoodsDetailFragment() {
@@ -61,18 +60,44 @@ public class GoodsDetailFragment extends Fragment implements View.OnClickListene
         activity = (AppCompatActivity)this.getActivity();
         ButterKnife.bind(this, view);
 
-        tabTextList = new ArrayList<>();
-        tabTextList.add(tv_goods_detail);
-        tabTextList.add(tv_goods_config);
-
-        setData();
-
-        ll_goods_detail.setOnClickListener(this);
-        ll_goods_config.setOnClickListener(this);
+        initView();
         return view;
     }
 
-    private void setData() {
+    void initView() {
+        tabTextList = new ArrayList<>();
+        tabTextList.add(tv_goods_detail);
+        tabTextList.add(tv_goods_config);
+        initDetailFragments();
+        ll_goods_detail.setOnClickListener(this);
+        ll_goods_config.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_goods_detail:
+                //商品详情tab
+                switchDetailFragments(nowFragment, goodsDetailWebFragment);
+                nowIndex = 0;
+                nowFragment = goodsDetailWebFragment;
+                switchDetailFragmentsIndicator();
+                break;
+
+            case R.id.ll_goods_config:
+                //规格参数tab
+                switchDetailFragments(nowFragment, goodsConfigFragment);
+                nowIndex = 1;
+                nowFragment = goodsConfigFragment;
+                switchDetailFragmentsIndicator();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void initDetailFragments() {
         goodsConfigFragment = new GoodsDetailConfigFragment();
         goodsDetailWebFragment = new GoodsDetailWebFragment();
 
@@ -82,31 +107,7 @@ public class GoodsDetailFragment extends Fragment implements View.OnClickListene
         fragmentManager.beginTransaction().replace(R.id.fl_content, nowFragment).commitAllowingStateLoss();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_goods_detail:
-                //商品详情tab
-                switchFragment(nowFragment, goodsDetailWebFragment);
-                nowIndex = 0;
-                nowFragment = goodsDetailWebFragment;
-                scrollCursor();
-                break;
-
-            case R.id.ll_goods_config:
-                //规格参数tab
-                switchFragment(nowFragment, goodsConfigFragment);
-                nowIndex = 1;
-                nowFragment = goodsConfigFragment;
-                scrollCursor();
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    private void switchFragment(Fragment fromFragment, Fragment toFragment) {
+    private void switchDetailFragments(Fragment fromFragment, Fragment toFragment) {
         if (nowFragment != toFragment) {
             fragmentTransaction = fragmentManager.beginTransaction();
             if (!toFragment.isAdded()) {    // 先判断是否被add过
@@ -117,7 +118,7 @@ public class GoodsDetailFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void scrollCursor() {
+    private void switchDetailFragmentsIndicator() {
         TranslateAnimation anim = new TranslateAnimation(fromX, nowIndex * v_tab_cursor.getWidth(), 0, 0);
         anim.setFillAfter(true);//设置动画结束时停在动画结束的位置
         anim.setDuration(50);

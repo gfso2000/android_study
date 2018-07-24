@@ -46,6 +46,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         vp_content.setAdapter(new GoodsDetailTitleAdapter(getSupportFragmentManager(),
                 fragmentList, new String[]{"商品", "详情", "评价"}));
         vp_content.setOffscreenPageLimit(3);
+        vp_content.setPagingEnabled(true);
         psts_tabs.setViewPager(vp_content);
 
         ll_back.setOnClickListener((v)->{

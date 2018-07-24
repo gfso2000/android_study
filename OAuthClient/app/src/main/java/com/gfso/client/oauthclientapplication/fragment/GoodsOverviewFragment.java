@@ -5,19 +5,27 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.gfso.client.oauthclientapplication.GoodsDetailActivity;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.bean.RecommendGoodsBean;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.GoodsDetailRecommendAdapter;
+import com.gfso.client.oauthclientapplication.fragment.widget.DragScrollDetailsLayout;
 import com.gfso.client.oauthclientapplication.fragment.widget.NetworkImageHolderView;
 
 import java.math.BigDecimal;
@@ -27,7 +35,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GoodsOverviewFragment extends GoodsDetailFragment {
+public class GoodsOverviewFragment extends Fragment implements View.OnClickListener, DragScrollDetailsLayout.OnSlideFinishListener{
     @BindView(R.id.fab_up_slide)
     FloatingActionButton fab_up_slide;
     @BindView(R.id.vp_item_goods_img)
@@ -46,8 +54,33 @@ public class GoodsOverviewFragment extends GoodsDetailFragment {
     LinearLayout ll_pull_up;
     @BindView(R.id.tv_old_price)
     TextView tv_old_price;
+    @BindView(R.id.sv_switch)
+    DragScrollDetailsLayout scrollLayout;
 
-    AppCompatActivity activity = null;
+    //detail widgets
+    @BindView(R.id.ll_goods_detail)
+    LinearLayout ll_goods_detail;
+    @BindView(R.id.ll_goods_config)
+    LinearLayout ll_goods_config;
+    @BindView(R.id.tv_goods_detail)
+    TextView tv_goods_detail;
+    @BindView(R.id.tv_goods_config)
+    TextView tv_goods_config;
+    @BindView(R.id.fl_content)
+    FrameLayout fl_content;
+    @BindView(R.id.v_tab_cursor)
+    View v_tab_cursor;
+
+    private int nowIndex;
+    private float fromX;
+    private List<TextView> tabTextList;
+    private GoodsDetailConfigFragment goodsConfigFragment;
+    private GoodsDetailWebFragment goodsDetailWebFragment;
+    private Fragment nowFragment;
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+
+    GoodsDetailActivity activity = null;
 
     public GoodsOverviewFragment() {
         // Required empty public constructor
@@ -58,9 +91,15 @@ public class GoodsOverviewFragment extends GoodsDetailFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_goods_overview, container, false);
-        activity = (AppCompatActivity)this.getActivity();
+        activity = (GoodsDetailActivity)this.getActivity();
         ButterKnife.bind(this, view);
 
+        initView();
+
+        return view;
+    }
+
+    void initView() {
         setHeadImagesView();
         setRecommendGoods();
         //设置文字中间一条横线
@@ -73,24 +112,84 @@ public class GoodsOverviewFragment extends GoodsDetailFragment {
         ll_comment.setOnClickListener(this);
         ll_pull_up.setOnClickListener(this);
 
-        return view;
+        //when top bottom view changed, inform me
+        scrollLayout.setOnSlideDetailsListener(this);
+
+        //detail widgets
+        tabTextList = new ArrayList<>();
+        tabTextList.add(tv_goods_detail);
+        tabTextList.add(tv_goods_config);
+        initDetailFragments();
+        ll_goods_detail.setOnClickListener(this);
+        ll_goods_config.setOnClickListener(this);
     }
 
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_pull_up:
                 //上拉查看图文详情
                 //sv_switch.smoothOpen(true);
+                Toast.makeText(activity, "hello", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.fab_up_slide:
                 //点击滑动到顶部
                 sv_goods_info.smoothScrollTo(0, 0);
-                //sv_switch.smoothClose(true);
+                scrollLayout.scrollToTop();
+                break;
+
+            case R.id.ll_goods_detail:
+                //商品详情tab
+                switchDetailFragments(nowFragment, goodsDetailWebFragment);
+                nowIndex = 0;
+                nowFragment = goodsDetailWebFragment;
+                switchDetailFragmentsIndicator();
+                break;
+
+            case R.id.ll_goods_config:
+                //规格参数tab
+                switchDetailFragments(nowFragment, goodsConfigFragment);
+                nowIndex = 1;
+                nowFragment = goodsConfigFragment;
+                switchDetailFragmentsIndicator();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void initDetailFragments() {
+        goodsConfigFragment = new GoodsDetailConfigFragment();
+        goodsDetailWebFragment = new GoodsDetailWebFragment();
+
+        nowFragment = goodsDetailWebFragment;
+        fragmentManager = getChildFragmentManager();
+        //默认显示商品详情tab
+        fragmentManager.beginTransaction().replace(R.id.fl_content, nowFragment).commitAllowingStateLoss();
+    }
+
+    private void switchDetailFragments(Fragment fromFragment, Fragment toFragment) {
+        if (nowFragment != toFragment) {
+            fragmentTransaction = fragmentManager.beginTransaction();
+            if (!toFragment.isAdded()) {    // 先判断是否被add过
+                fragmentTransaction.hide(fromFragment).add(R.id.fl_content, toFragment).commitAllowingStateLoss(); // 隐藏当前的fragment，add下一个到activity中
+            } else {
+                fragmentTransaction.hide(fromFragment).show(toFragment).commitAllowingStateLoss(); // 隐藏当前的fragment，显示下一个
+            }
+        }
+    }
+
+    private void switchDetailFragmentsIndicator() {
+        TranslateAnimation anim = new TranslateAnimation(fromX, nowIndex * v_tab_cursor.getWidth(), 0, 0);
+        anim.setFillAfter(true);//设置动画结束时停在动画结束的位置
+        anim.setDuration(50);
+        //保存动画结束时游标的位置,作为下次滑动的起点
+        fromX = nowIndex * v_tab_cursor.getWidth();
+        v_tab_cursor.startAnimation(anim);
+
+        //设置Tab切换颜色
+        for (int i = 0; i < tabTextList.size(); i++) {
+            tabTextList.get(i).setTextColor(i == nowIndex ? ContextCompat.getColor(activity, R.color.red) : ContextCompat.getColor(activity, R.color.black));
         }
     }
 
@@ -179,5 +278,21 @@ public class GoodsOverviewFragment extends GoodsDetailFragment {
         super.onPause();
         //停止翻页
         vp_item_goods_img.stopTurning();
+    }
+
+    @Override
+    public void onStatusChanged(DragScrollDetailsLayout.CurrentTargetIndex status) {
+        if(DragScrollDetailsLayout.CurrentTargetIndex.UPSTAIRS == status){
+            fab_up_slide.hide();
+            activity.vp_content.setPagingEnabled(true);
+            activity.tv_title.setVisibility(View.GONE);
+            activity.psts_tabs.setVisibility(View.VISIBLE);
+        } else {
+            fab_up_slide.show();
+            activity.vp_content.setPagingEnabled(false);
+            activity.tv_title.setVisibility(View.VISIBLE);
+            activity.psts_tabs.setVisibility(View.GONE);
+        }
+        Toast.makeText(activity, status.toString(), Toast.LENGTH_LONG).show();
     }
 }
