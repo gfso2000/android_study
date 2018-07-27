@@ -68,6 +68,8 @@ dependencies {
     implementation 'com.gxz.pagerslidingtabstrip:library:1.3'
     implementation 'com.bigkoo:convenientbanner:2.0.5'
 
+    implementation 'com.zaaach:citypicker:2.0.2'
+
     implementation name: 'SMSSDK-3.0.0', ext: 'aar'
     implementation name: 'SMSSDKGUI-3.0.0', ext: 'aar'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

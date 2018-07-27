@@ -2,6 +2,9 @@ package com.gfso.client.oauthclientapplication.util;
 
 public class Contents {
     public static int LOGIN_REQUEST=1;
+    public static int CHOOSE_CITY_REQUEST=2;
+    public static final String CHOOSE_CITY_VALUE="CHOOSE_CITY_VALUE";
+
     public static int EDIT_ADDRESS_REQUEST=2;
     public static final String ADDRESS_ID="ADDRESS_ID";
     public static final String ADDRESS_NAME="ADDRESS_NAME";

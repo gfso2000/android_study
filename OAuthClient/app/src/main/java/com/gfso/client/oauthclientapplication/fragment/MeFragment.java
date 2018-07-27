@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.fragment.activity.AddressActivity;
+import com.gfso.client.oauthclientapplication.fragment.activity.ChooseCityActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.OrderActivity;
 import com.gfso.client.oauthclientapplication.util.Contents;
@@ -32,6 +33,8 @@ public class MeFragment extends Fragment {
     TextView userIdView;
     @BindView(R.id.my_address)
     TextView addressView;
+    @BindView(R.id.my_city)
+    TextView cityView;
     @BindView(R.id.my_list)
     TextView orderView;
 
@@ -63,8 +66,16 @@ public class MeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        cityView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity , ChooseCityActivity.class) ;
+                startActivityForResult(intent , Contents.CHOOSE_CITY_REQUEST);
+            }
+        });
         return view;
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -75,6 +86,12 @@ public class MeFragment extends Fragment {
                 String result = res.getString(Contents.LOGIN_USERID);
                 userIdView.setText(result);
                 Toast.makeText(activity,"login success:"+result,Toast.LENGTH_LONG);
+            }
+        } else if (requestCode == Contents.CHOOSE_CITY_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Bundle res = data.getExtras();
+                String result = res.getString(Contents.CHOOSE_CITY_VALUE);
+                Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
             }
         }
     }

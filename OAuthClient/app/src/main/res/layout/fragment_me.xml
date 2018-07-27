@@ -82,6 +82,21 @@
         android:id="@+id/my_address"/>
 
     <View
+        style="@style/line_vertical"
+        ></View>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="center_vertical"
+        android:text="  选择城市"
+        android:background="@color/white"
+        android:drawableLeft="@drawable/icon_location"
+        android:id="@+id/my_city"/>
+
+    <View
         style="@style/line_max_vertical"/>
 
     <Button
