@@ -358,4 +358,8 @@
     <color name="white_color_disable">#7fffffff</color>
 
     <color name="border_color">#a9b7b7</color>
+
+    <color name="gray_text">#909497</color>
+    <color name="patrol_finish_blue">#44B2FE</color>
+    <color name="blue_text">#3cafff</color>
 </resources>

@@ -28,9 +28,7 @@
             android:textSize="20sp" />
     </android.support.v7.widget.Toolbar>
 
-    <View
-        style="@style/line_max_vertical"
-        ></View>
+    <View style="@style/line_max_vertical"/>
 
     <com.gfso.client.oauthclientapplication.fragment.widget.MyEditText
         android:id="@+id/userId"

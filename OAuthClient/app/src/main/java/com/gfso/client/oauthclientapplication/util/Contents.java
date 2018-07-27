@@ -17,4 +17,9 @@ public class Contents {
     public static final String USER_JSON = "user_json" ;
     public static final String TOKEN = "token" ;
     public static final String LOGIN_URL = "http://10.59.167.130:8081/mobile/login";
+
+    public static final int PAY_SUCCESS=1;
+    public static final int PAY_FAIL=2;
+    public static final int PAY_PENDING=3;
+    public static final int PAY_ALL=4;
 }

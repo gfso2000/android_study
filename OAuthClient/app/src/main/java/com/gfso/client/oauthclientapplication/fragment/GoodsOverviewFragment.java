@@ -3,6 +3,7 @@ package com.gfso.client.oauthclientapplication.fragment;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -100,8 +101,8 @@ public class GoodsOverviewFragment extends Fragment implements View.OnClickListe
     }
 
     void initView() {
-        setHeadImagesView();
         setRecommendGoods();
+        setHeadImagesView();
         //设置文字中间一条横线
         tv_old_price.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         fab_up_slide.hide();
@@ -122,6 +123,11 @@ public class GoodsOverviewFragment extends Fragment implements View.OnClickListe
         initDetailFragments();
         ll_goods_detail.setOnClickListener(this);
         ll_goods_config.setOnClickListener(this);
+
+        //after setRecommendGoods(), the recommendGoods banner will get focus, so scrollToTop again
+        //TODO: after swipe back, the recommendGoods will get focus again, how to handle it?
+        sv_goods_info.smoothScrollTo(0, 0);
+        scrollLayout.scrollToTop();
     }
 
     public void onClick(View v) {
@@ -224,9 +230,29 @@ public class GoodsOverviewFragment extends Fragment implements View.OnClickListe
                 "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
         data.add(new RecommendGoodsBean("IPEGA/艾派格 幽灵之子 无线蓝牙游戏枪 游戏体感枪 苹果安卓智能游戏手柄 标配",
                 "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
+        data.add(new RecommendGoodsBean("00000体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("11111体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("11111苹果安卓智能游戏手柄 标配",
+                "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
+        data.add(new RecommendGoodsBean("22222体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("22222苹果安卓智能游戏手柄 标配",
+                "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
         data.add(new RecommendGoodsBean("Letv/乐视 LETV体感-超级枪王 乐视TV超级电视产品玩具 体感游戏枪 电玩道具 黑色",
                 "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
         data.add(new RecommendGoodsBean("IPEGA/艾派格 幽灵之子 无线蓝牙游戏枪 游戏体感枪 苹果安卓智能游戏手柄 标配",
+                "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
+        data.add(new RecommendGoodsBean("00000体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("11111体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("11111苹果安卓智能游戏手柄 标配",
+                "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
+        data.add(new RecommendGoodsBean("22222体感游戏枪 电玩道具 黑色",
+                "http://img4.hqbcdn.com/product/79/f3/79f3ef1b0b2283def1f01e12f21606d4.jpg", new BigDecimal(599), "799"));
+        data.add(new RecommendGoodsBean("22222苹果安卓智能游戏手柄 标配",
                 "http://img2.hqbcdn.com/product/00/76/0076cedb0a7d728ec1c8ec149cff0d16.jpg", new BigDecimal(299), "399"));
         List<List<RecommendGoodsBean>> handledData = handleRecommendGoods(data);
         //设置如果只有一组数据时不能滑动

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.gfso.client.oauthclientapplication.R;
 import com.gfso.client.oauthclientapplication.fragment.activity.AddressActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
+import com.gfso.client.oauthclientapplication.fragment.activity.OrderActivity;
 import com.gfso.client.oauthclientapplication.util.Contents;
 
 import butterknife.BindView;
@@ -31,6 +32,8 @@ public class MeFragment extends Fragment {
     TextView userIdView;
     @BindView(R.id.my_address)
     TextView addressView;
+    @BindView(R.id.my_list)
+    TextView orderView;
 
     @Nullable
     @Override
@@ -50,6 +53,13 @@ public class MeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity , AddressActivity.class) ;
+                startActivity(intent);
+            }
+        });
+        orderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity , OrderActivity.class) ;
                 startActivity(intent);
             }
         });

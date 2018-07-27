@@ -1,5 +1,6 @@
 package com.gfso.client.oauthclientapplication.fragment;
 
+import android.app.SearchableInfo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +31,7 @@ import com.gfso.client.oauthclientapplication.CaptureActivityPortrait;
 import com.gfso.client.oauthclientapplication.GoodsDetailActivity;
 import com.gfso.client.oauthclientapplication.MyApplication;
 import com.gfso.client.oauthclientapplication.R;
+import com.gfso.client.oauthclientapplication.SearchActivity;
 import com.gfso.client.oauthclientapplication.bean.MultiTypeItemBean;
 import com.gfso.client.oauthclientapplication.fragment.task.ScanLoginTask;
 import com.gfso.client.oauthclientapplication.fragment.recycleview.MultiTypeItemAdapter;
@@ -56,7 +61,6 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.shopping_return_top)
     FloatingActionButton backToTopButton;
-
     AppCompatActivity activity = null;
 
     @Nullable
@@ -66,6 +70,7 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
         activity = (AppCompatActivity)this.getActivity();
         Fresco.initialize(activity);
         ButterKnife.bind(this, view);
+
         blackScanSearchNotificationButton();
         initHeader();
         Init();
@@ -171,6 +176,9 @@ public class ShoppingFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onClick(View v) {
                 Toast.makeText(activity, "Hello Dashboard", Toast.LENGTH_SHORT).show();
+                //add filter demo here
+                Intent intent = new Intent(activity, SearchActivity.class);
+                startActivity(intent);
             }
         });
 
