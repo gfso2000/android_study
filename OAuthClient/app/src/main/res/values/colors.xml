@@ -362,4 +362,54 @@
     <color name="gray_text">#909497</color>
     <color name="patrol_finish_blue">#44B2FE</color>
     <color name="blue_text">#3cafff</color>
+
+
+    <color name="separate_color">#d7d7d7</color>
+    <color name="broder">#a0a0a0</color>
+    <color name="select_broder">#898787</color>
+
+
+    <color name="color_tab_item_fous">#e55f24</color>
+    <color name="color_tab_item_normal">#000000</color>
+
+    <color name="personal_head_bg">#ff6a505d</color>
+
+    <!-- 公共颜色属性 -->
+    <color name="bg_activity">#fff0f2f5</color>
+    <color name="bg_view">#ffffffff</color>
+    <color name="bg_header">#f8f8f8</color>
+
+    <color name="color_font_gray">#9e9d9d</color>
+    <color name="color_font_blue">#47B0DA</color>
+    <color name="black_alph25">#05000000</color>
+    <color name="black_alph55">#55000000</color>
+    <color name="select_yellow">#f2b350</color>//选中黄色
+
+    <color name="button_fouces_gray">#f6f6f6</color>
+    <color name="button_bg_gray">#dddcdc</color>//按钮背景灰色
+
+    <color name="text_color_red_price">#f26969</color>
+
+    <color name="move_line">#f15353</color>//FilterBar 选中颜色
+    <color name="light_red">#f15353</color>//京东红
+    <color name="select_light_red">#f03f3f</color>//京东红:选中背景颜色
+
+    <color name="sub_title">#848689</color>//副标题文本颜色
+
+    <color name="sort_selected_text_color">#fff15353</color>
+    <color name="sort_normal_text_color">#ff000000</color>
+    <color name="search_title_hint_text_color">#ffb6b6b6</color>
+    <color name="search_title_text_color">#ff474646</color>
+    <color name="separator_line">#ffcccccc</color>
+    <color name="transparentblue">#445CACEE</color>
+    <color name="transparentwhite">#44ffffff</color>
+    <color name="color_ff">#F0F0F0</color>
+    <color name="color_00">#8A000000</color>
+    <color name="botton_nav_bg">#f8f8f8</color>
+    <color name="bn">#ffa0a0a0</color>
+
+    <!-- 获取验证码背景色 -->
+    <color name="bg_code">#00C5A3</color>
+    <!-- 点击后背景色 -->
+    <color name="bg_code_after">#2BBE6A</color>
 </resources>

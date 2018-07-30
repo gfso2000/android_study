@@ -81,9 +81,8 @@
         android:drawableLeft="@drawable/icon_location"
         android:id="@+id/my_address"/>
 
-    <View
-        style="@style/line_vertical"
-        ></View>
+    <View style="@style/line_vertical"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
