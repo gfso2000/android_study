@@ -34,7 +34,7 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/head_notification_layout"
+            android:id="@+id/head_view_switch_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/head_scan_search_notification_layout_scan"
@@ -84,7 +84,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/head_notification_layout"
+            android:layout_toLeftOf="@id/head_view_switch_layout"
             android:layout_toRightOf="@id/head_scan_search_notification_layout_scan"
             android:background="@mipmap/sousuokuang">
 

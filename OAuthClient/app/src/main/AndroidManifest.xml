@@ -56,9 +56,12 @@
         <activity android:name=".fragment.activity.AddressActivity" />
         <activity android:name=".fragment.activity.EditAddressActivity" />
         <activity android:name=".GoodsDetailActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchActivity" android:launchMode="singleTask"/>
         <activity android:name=".fragment.activity.OrderActivity" />
-        <activity android:name=".fragment.activity.ChooseCityActivity" android:theme="@style/DefaultCityPickerTheme"></activity>
+        <activity
+            android:name=".fragment.activity.ChooseCityActivity"
+            android:theme="@style/DefaultCityPickerTheme" />
+        <activity android:name=".SearchResultActivity" android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

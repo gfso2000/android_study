@@ -41,8 +41,7 @@
         android:enabled="true"
         android:textSize="14sp"
         android:drawableLeft="@drawable/icon_telphone_32"/>
-    <View
-        style="@style/line_vertical"/>
+    <View style="@style/line_vertical"/>
 
     <com.gfso.client.oauthclientapplication.fragment.widget.MyEditText
         android:id="@+id/password"

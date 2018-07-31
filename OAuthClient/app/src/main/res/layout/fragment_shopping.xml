@@ -25,7 +25,7 @@
         android:layout_gravity="end|bottom"
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="28dp"
-        android:src="@drawable/return_top"
+        android:src="@mipmap/go_top"
         android:visibility="invisible"
         app:backgroundTint="?android:attr/colorButtonNormal" />
     <!--add header after content, then the header will render above content, it means, the later layout has higher z-index -->
