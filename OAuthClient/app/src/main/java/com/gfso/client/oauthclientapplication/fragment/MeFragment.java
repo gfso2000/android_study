@@ -1,6 +1,13 @@
 package com.gfso.client.oauthclientapplication.fragment;
 
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +27,8 @@ import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.OrderActivity;
 import com.gfso.client.oauthclientapplication.util.Contents;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,6 +46,8 @@ public class MeFragment extends Fragment {
     TextView cityView;
     @BindView(R.id.my_list)
     TextView orderView;
+    @BindView(R.id.my_favorite)
+    TextView my_favorite;
 
     @Nullable
     @Override
@@ -73,6 +84,13 @@ public class MeFragment extends Fragment {
                 startActivityForResult(intent , Contents.CHOOSE_CITY_REQUEST);
             }
         });
+        my_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareMsg("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI", "微信",
+                        "title", "text", 1, getUriFromDrawableRes(activity, R.drawable.album1));
+            }
+        });
         return view;
     }
 
@@ -94,5 +112,52 @@ public class MeFragment extends Fragment {
                 Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void shareMsg(String packageName, String activityName,
+                          String appname, String msgTitle, String msgText, int type,
+                          Uri drawableUri) {
+        if (!packageName.isEmpty() && !isAvailable(activity, packageName)) {// 判断APP是否存在
+            Toast.makeText(activity, "请先安装" + appname, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent("android.intent.action.SEND");
+        if (type == 0) {
+            intent.setType("text/plain");
+        } else if (type == 1) {
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, drawableUri);
+        }
+
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!packageName.isEmpty()) {
+            intent.setComponent(new ComponentName(packageName, activityName));
+            activity.startActivity(intent);
+        } else {
+            activity.startActivity(Intent.createChooser(intent, msgTitle));
+        }
+    }
+
+    public boolean isAvailable(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        for (int i = 0; i < pinfo.size(); i++) {
+            if (((PackageInfo) pinfo.get(i)).packageName
+                    .equalsIgnoreCase(packageName))
+                return true;
+        }
+        return false;
+    }
+
+    public Uri getUriFromDrawableRes(Context context, int id) {
+        Resources resources = context.getResources();
+        String path = ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
+                + resources.getResourcePackageName(id) + "/"
+                + resources.getResourceTypeName(id) + "/"
+                + resources.getResourceEntryName(id);
+        return Uri.parse(path);
     }
 }

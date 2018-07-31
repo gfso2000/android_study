@@ -2,6 +2,7 @@ package com.gfso.client.oauthclientapplication.fragment.recycleview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -52,16 +53,19 @@ public class CategoryAdapter extends BaseAdapter {
             holder = new ViewHolder();
             arg1 = View.inflate(context, R.layout.item_leftside_category, null);
             holder.tv_name = (TextView) arg1.findViewById(R.id.category_name);
+            holder.indicator = (TextView) arg1.findViewById(R.id.category_indicator);
             arg1.setTag(holder);
         } else {
             holder = (ViewHolder) arg1.getTag();
         }
         if (arg0 == selectItem) {
             holder.tv_name.setBackgroundColor(Color.WHITE);
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.green));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.green));
+            holder.indicator.setBackgroundColor(Color.RED);
         } else {
-            holder.tv_name.setBackgroundColor(context.getResources().getColor(R.color.windowBackground));
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.black));
+            holder.tv_name.setBackgroundColor(ContextCompat.getColor(context, R.color.windowBackground));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.indicator.setBackgroundColor(Color.WHITE);
         }
         holder.tv_name.setText(list.get(arg0));
         return arg1;
@@ -69,5 +73,6 @@ public class CategoryAdapter extends BaseAdapter {
 
     static class ViewHolder {
         private TextView tv_name;
+        private TextView indicator;
     }
 }
