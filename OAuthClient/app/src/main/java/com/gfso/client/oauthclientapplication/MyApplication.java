@@ -10,6 +10,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gfso.client.oauthclientapplication.bean.User;
 import com.gfso.client.oauthclientapplication.util.UserLocalData;
 import com.lzy.ninegrid.NineGridView;
+import com.mob.MobSDK;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -55,6 +56,7 @@ public class MyApplication extends Application {
         initUser();
         Fresco.initialize(this);
         NineGridView.setImageLoader(new PicassoImageLoader());
+        MobSDK.init(this);
     }
 
     public User getUser(){

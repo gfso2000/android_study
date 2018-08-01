@@ -1,4 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.mob.sdk'
+
+MobSDK {
+    appKey "2727b3a61c620"
+    appSecret "ab37970e689ca3dcb56b655f391f7e61"
+    SMSSDK {}
+}
 
 android {
     compileSdkVersion 27
@@ -70,7 +77,5 @@ dependencies {
 
     implementation 'com.zaaach:citypicker:2.0.2'
 
-    implementation name: 'SMSSDK-3.0.0', ext: 'aar'
-    implementation name: 'SMSSDKGUI-3.0.0', ext: 'aar'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
