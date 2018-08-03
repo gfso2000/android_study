@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,8 +26,16 @@ import com.gfso.client.oauthclientapplication.fragment.activity.AddressActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.ChooseCityActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.LoginActivity;
 import com.gfso.client.oauthclientapplication.fragment.activity.OrderActivity;
+import com.gfso.client.oauthclientapplication.fragment.widget.MyCityPicker;
 import com.gfso.client.oauthclientapplication.util.Contents;
+import com.zaaach.citypicker.CityPicker;
+import com.zaaach.citypicker.adapter.OnPickListener;
+import com.zaaach.citypicker.model.City;
+import com.zaaach.citypicker.model.HotCity;
+import com.zaaach.citypicker.model.LocateState;
+import com.zaaach.citypicker.model.LocatedCity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

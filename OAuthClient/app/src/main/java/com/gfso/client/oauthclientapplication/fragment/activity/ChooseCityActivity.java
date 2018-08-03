@@ -1,11 +1,12 @@
 package com.gfso.client.oauthclientapplication.fragment.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.Toast;
 
+import com.gfso.client.oauthclientapplication.fragment.widget.MyCityPicker;
+import com.gfso.client.oauthclientapplication.fragment.widget.MyCityPickerDialogFragment;
 import com.gfso.client.oauthclientapplication.util.Contents;
 import com.zaaach.citypicker.CityPicker;
 import com.zaaach.citypicker.adapter.OnPickListener;
@@ -17,7 +18,7 @@ import com.zaaach.citypicker.model.LocatedCity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseCityActivity extends AppCompatActivity {
+public class ChooseCityActivity extends AppCompatActivity implements MyCityPickerDialogFragment.OnCancelListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +35,13 @@ public class ChooseCityActivity extends AppCompatActivity {
         hotCities.add(new HotCity("深圳", "广东", "101280601"));
         hotCities.add(new HotCity("杭州", "浙江", "101210101"));
 
-        CityPicker.getInstance()
+        MyCityPicker.getInstance()
                 .setFragmentManager(this.getSupportFragmentManager())	//此方法必须调用
                 .enableAnimation(true)	//启用动画效果
                 //.setAnimationStyle(anim)	//自定义动画
                 .setLocatedCity(new LocatedCity("杭州", "浙江", "101210101")) //APP自身已定位的城市，默认为null（定位失败）
                 .setHotCities(hotCities)	//指定热门城市
+                .setOnCancelListener(this)
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
@@ -64,5 +66,10 @@ public class ChooseCityActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    @Override
+    public void onCancel() {
+        this.finish();
     }
 }
