@@ -3,10 +3,6 @@ package com.gfso.client.oauthclientapplication.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by 博 on 2017/7/14.
- */
-
 public class PreferenceUtil {
 
     private static SharedPreferences sharedPreferences = null ;
@@ -22,23 +18,18 @@ public class PreferenceUtil {
     }
 
     public static void putString(Context context , String key , String value){
-
         if (mcontext == null || sharedPreferences == null ){
             GetPreferenceUtil(context) ;
         }
-
         editor.putString(key , value) ;
         editor.commit() ;
-
     }
 
 
     public static String getString(Context context , String key , String defautString){
-
         if (mcontext == null || sharedPreferences == null ){
             GetPreferenceUtil(context) ;
         }
-
         return sharedPreferences.getString(key , defautString) ;
     }
 }

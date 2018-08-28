@@ -1,0 +1,152 @@
+{
+	"steps":[
+		{
+			"command":"tap 1000 2200",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 个人中心"
+		},
+		{
+			"command":"tap 150 300",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 头像"
+		},
+		{
+			"command":"tap 150 1000",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 退出登录"
+		},
+		{
+			"command":"tap 800 1300",
+			"iterate":1,
+			"sleep":3,
+			"description":"click 是"
+		},
+		
+		
+		{
+			"command":"tap 150 300",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 头像"
+		},
+		{
+			"command":"tap 300 800",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 用户名， 使用户名获得焦点"
+		},
+		{
+			"command":"keyevent KEYCODE_DEL",
+			"iterate":11,
+			"sleep":1,
+			"description":"delete one character, execute 50 times, to make sure clear username"
+		},
+		{
+			"command":"text '%username%'",
+			"iterate":1,
+			"sleep":1,
+			"description":"input username"
+		},
+		{
+			"command":"tap 300 1000",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 密码， 使密码获得焦点"
+		},
+		{
+			"command":"text '%password%'",
+			"iterate":1,
+			"sleep":1,
+			"description":"input password"
+		},
+		{
+			"command":"tap 900 100",
+			"iterate":1,
+			"sleep":1,
+			"description":"点击空白处，使键盘消失"
+		},
+		{
+			"command":"tap 300 1400",
+			"iterate":1,
+			"sleep":1,
+			"description":"点击 登录 按钮"
+		},
+		
+		
+		{
+			"command":"tap 100 2200",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 首页"
+		},
+		{
+			"command":"tap 125 1000",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 茅台馆"
+		},
+		{
+			"command":"tap 125 1200",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 飞天茅台商品"
+		},
+		{
+			"command":"tap 900 2100",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 前往登记 按钮"
+		},
+		{
+			"command":"tap 1000 1550",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 数量加号 按钮"
+		},
+		{
+			"command":"tap 1000 2200",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 前往登记 按钮"
+		},
+		{
+			"command":"tap 1000 900",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 配送 按钮"
+		},
+		{
+			"command":"tap 100 2000",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 上门自提 按钮"
+		},
+		{
+			"command":"tap 1000 2200",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 提交登记（需人脸识别） 按钮"
+		},
+		{
+			"command":"tap 500 1500",
+			"iterate":1,
+			"sleep":1,
+			"description":"click 立即认证 按钮"
+		},
+		{
+			"command":"tap 500 1600",
+			"iterate":1,
+			"sleep":30,
+			"description":"click 同意协议，开始拍摄 按钮"
+		},
+		{
+			"command":"keyevent KEYCODE_BACK",
+			"iterate":1,
+			"sleep":2,
+			"description":"返回主页面"
+		}
+	]
+}

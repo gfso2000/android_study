@@ -196,9 +196,33 @@ flowable buffer size is 128
 barcode, qrcode scan
 https://medium.com/@hitherejoe/exploring-firebase-mlkit-on-android-barcode-scanning-part-three-cc6f5921a108
 
+https://github.com/15829238397/CN5E-shop
 
+bottom navigation view, the middle icon is different
+https://stackoverflow.com/questions/44342530/how-to-make-bottom-navigation-show-menu-items-with-icon-and-text-except-center-i
 
+http://dashboard.mob.com/#!/sms/analytics/list
+qq mail
+qwert12345
+-------------------------------------------------------------------------------------------------------------------
+launch mode:
+standard: always create new instance
+-------------------------------------------
+single top: if the target activity is on top, just use it, otherwise create new instance
+singleTop适合接收通知启动的内容显示页面。
+例如，某个新闻客户端的新闻内容页面，如果收到10个新闻推送，每次都打开一个新闻内容页面是很烦人的。
+-------------------------------------------
+single task: main->search->search result->search->search result->search->click back, it will return to main. the instances above search will be removed.
+-------------------------------------------
+single instance: the target activity is used as a share activity, always use the existing one, because the target activity is in another stack.
+-------------------------------------------------------------------------------------------------------------------
+use motionLayout to create collapsingToolbar
+https://blog.stylingandroid.com/motionlayout-collapsing-toolbar-part-1/
+paging query, it uses retrofit+rxjava+okhttp3
+https://proandroiddev.com/8-steps-to-implement-paging-library-in-android-d02500f7fffe
+https://github.com/anitaa1990/PagingLibrary-Sample
 
+C:\Users\i325639\AppData\Local\Android\Sdk\platform-tools
 
 
 

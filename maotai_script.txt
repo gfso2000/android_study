@@ -1,0 +1,27 @@
+adb shell input tap 1000 2200 //click 个人中心
+adb shell input tap 150 300 //click 头像
+adb shell input tap 150 1000 //click 退出登录
+adb shell input tap 800 1300 //click 是
+
+adb shell input tap 150 300 //click 头像
+adb shell input tap 300 800 //click 用户名， 使用户名获得焦点
+adb shell input keyevent KEYCODE_DEL //delete one character, execute 50 times, to make sure clear username
+adb shell input text '13482877377' //input username
+adb shell input tap 300 1000 //click 密码， 使密码获得焦点
+adb shell input text 'qwert67890' //input username
+adb shell input tap 900 100 //点击空白处，使键盘消失
+adb shell input tap 300 1400 //点击 登录 按钮
+
+adb shell input tap 100 2200 //click 首页
+adb shell input tap 125 1000 //click 茅台馆
+adb shell input tap 125 1200 //click 飞天茅台商品
+adb shell input tap 900 2100 //click 前往登记 按钮
+adb shell input tap 1000 1550 //click 数量加号 按钮
+adb shell input tap 1000 2200 //click 前往登记 按钮
+adb shell input tap 1000 900 //click 配送 按钮
+adb shell input tap 100 2000 //click 上门自提 按钮
+adb shell input tap 1000 2200 //click 提交登记（需人脸识别） 按钮
+adb shell input tap 500 1500 //click 立即认证 按钮
+adb shell input tap 500 1600 //click 同意协议，开始拍摄 按钮
+
+adb shell input keyevent KEYCODE_BACK//返回主页面
